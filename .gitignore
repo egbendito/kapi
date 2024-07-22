@@ -1,0 +1,20 @@
+temp.*
+_old/
+data/
+run.R
+*.zip
+# R/R-studio files
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.Rproj.user/
+.httr-oauth
+*_cache/
+/cache/
+*.utf8.md
+*.knit.md
+.Renviron
+*.Rproj
+.Rprofile
+other/
