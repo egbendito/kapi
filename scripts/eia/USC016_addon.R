@@ -15,7 +15,7 @@ carob_script <- function(path) {
 "
    
    # uri <- "doi:Chinyanja-Solidaridad-Soy-AddOn"
-   uri <- "USC016"
+   uri <- "USC016_addon"
    group <- "eia"
    
    dset <- data.frame(
