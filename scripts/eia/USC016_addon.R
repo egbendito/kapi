@@ -14,13 +14,15 @@ carob_script <- function(path) {
 
 "
    
-   uri <- "doi:Chinyanja-Solidaridad-Soy-AddOn"
+   # uri <- "doi:Chinyanja-Solidaridad-Soy-AddOn"
+   uri <- "USC016_addon"
    group <- "eia"
    
    dset <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-      uri = carobiner::simple_uri(uri),
+      # uri = carobiner::simple_uri(uri),
+      uri = uri,
       dataset_id = uri,
       authors =NA,
       data_institute =NA,
@@ -28,10 +30,10 @@ carob_script <- function(path) {
       group = group,
       license = 'Some license here...',
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy - Chinyanja-Solidaridad-Soy-AddOn',
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
-      carob_date="2024-06-24",
-      treatment_vars = "longitude;latitude;variety;N_fertilizer;P_fertilizer;K_fertilizer"
+      project = 'Excellence in Agronomy;Chinyanja-Solidaridad-Soy;AddOn',
+      data_type = "survey", # or, e.g. "on-farm experiment", "survey", "compilation"
+      carob_date="2024-06-24"
+      # treatment_vars = "longitude;latitude;variety;N_fertilizer;P_fertilizer;K_fertilizer"
    )
    
    # Manually build path (this can be automated...)
@@ -138,33 +140,42 @@ carob_script <- function(path) {
    ### Adding others variables ##################################
    
    proces <- function(f){ 
-      r2 <- carobiner::read.excel(f,sheet = "plot_information_repeat")
-      r2 <- r2[-1,] ## remove the first row of r
-      names(r2) <- gsub("_index","index",names(r2))
-      d2 <- data.frame(
-         variety= r2$variety,
-         previous_crop=r2$previous_crop,
-         intercrops= r2$inter_crop,
-         #follow_date= r2$fallow,
-         planting_date= as.character(as.Date(as.numeric(r2$planting_date),origin="1899-12-30")),
-         #irrigation_source=r2$irrigation_source_plot,
-         #irrigation_time= r2$irrigation_time,
-         harvest_date= as.character(as.Date(as.numeric(r2$harvesting_date),origin="1899-12-30")),
-         season_constraint= r2$heat_stress,
-         pest_species= r2$pest_name,
-         pest_severity=r2$pest,
-         disease_severity= r2$disease,
-         disease= r2$disease_name,
-         weed_severity= r2$weeds,
-         seed_method= r2$seeding_method,
-         index=r2$index
-      )
-      
-      d2
+     r.nms <- colnames(readxl::read_excel(f, sheet = "plot_information_repeat", range = "A1:FO2"))
+     r2 <- readxl::read_excel(f, sheet = "plot_information_repeat", skip = 2, col_names = FALSE)
+     colnames(r2) <- r.nms
+     names(r2) <- gsub("_index","index",names(r2))
+     # EGB:
+     # # There seems to be some errors in the original data with the planting and harvest dates
+     for (rows in which(format(as.Date(r2$planting_date), "%Y")<2022)) {
+       r2$planting_date[rows] <- paste0(2022, "-",
+                                        format(as.Date(r2$planting_date), "%m"), "-",
+                                        format(as.Date(r2$planting_date), "%d"))
+     }
+     for (rows in which(format(as.Date(r2$harvesting_date), "%Y")>2023)) {
+       r2$harvesting_date[rows] <- paste0(2023, "-",
+                                          format(as.Date(r2$harvesting_date), "%m"), "-",
+                                          format(as.Date(r2$harvesting_date), "%d"))
+     }
+     d2 <- data.frame(
+       variety= r2$variety,
+       previous_crop=r2$previous_crop,
+       intercrops= r2$inter_crop,
+       planting_date= as.character(as.Date(r2$planting_date, "%Y-%m-%d")),
+       harvest_date= as.character(as.Date(r2$harvesting_date, "%Y-%m-%d")),
+       season_constraint= r2$heat_stress,
+       pest_species= r2$pest_name,
+       pest_severity=r2$pest,
+       disease_severity= r2$disease,
+       disease= r2$disease_name,
+       weed_severity= r2$weeds,
+       seed_method= r2$seeding_method,
+       index=r2$index
+     )
+     
+     d2
    }
    
-   d2 <- lapply(f1,proces) 
-   d2 <- do.call(rbind, d2)
+   d2 <- do.call(rbind, lapply(f1,proces))
    d <- merge(d,d2,by="index", all.x=TRUE)
    d$index <- NULL
    
@@ -241,6 +252,22 @@ carob_script <- function(path) {
    ### 
    d$land_prep_method[d$land_prep_method=="manual" | d$land_prep_method== "animal" | d$land_prep_method=="manual animal" | d$land_prep_method=="animal manual" | d$land_prep_method=="mechanical"
                       | d$land_prep_method=="animal 4wheel_tractor" | d$land_prep_method=="4wheel_tractor manual" | d$land_prep_method=="4wheel_tractor" | d$land_prep_method=="manual 4wheel_tractor"] <- "conventional"
+   
+   # EGB:
+   # # Fix irrigation dates
+   d$irrigation_dates <- gsub(" ", "; ", d$irrigation_dates)
+   d$irrigation_dates <- gsub("jan", "2023-01", d$irrigation_dates)
+   d$irrigation_dates <- gsub("feb", "2023-02", d$irrigation_dates)
+   d$irrigation_dates <- gsub("mar", "2023-03", d$irrigation_dates)
+   d$irrigation_dates <- gsub("apr", "2023-04", d$irrigation_dates)
+   d$irrigation_dates <- gsub("may", "2023-05", d$irrigation_dates)
+   d$irrigation_dates <- gsub("jun", "2022-06", d$irrigation_dates)
+   d$irrigation_dates <- gsub("jul", "2022-07", d$irrigation_dates)
+   d$irrigation_dates <- gsub("aug", "2022-08", d$irrigation_dates)
+   d$irrigation_dates <- gsub("sep", "2022-09", d$irrigation_dates)
+   d$irrigation_dates <- gsub("oct", "2022-10", d$irrigation_dates)
+   d$irrigation_dates <- gsub("nov", "2022-11", d$irrigation_dates)
+   d$irrigation_dates <- gsub("dec", "2022-12", d$irrigation_dates)
    
    
    message("yield is given in kg,bags and tonnes instead of kg/ha")

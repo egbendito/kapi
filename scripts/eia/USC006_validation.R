@@ -12,13 +12,13 @@ carob_script <- function(path) {
 
 "
   
-  uri <- "doi:Ethiopia-DigitalGreen-Validation"
+  uri <- "USC006_validation"
   group <- "eia"
   
   dset <- data.frame(
     # Need to fill-in metadata...
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-    uri = carobiner::simple_uri(uri),
+    uri = uri,
     dataset_id = uri,
     data_institutions = "Alliance Bioversity - CIAT",
     authors = "Lulseged Desta & Wuletawu Abera",
@@ -28,7 +28,7 @@ carob_script <- function(path) {
     license = 'Some license here...',
     carob_contributor = 'IITA Biometric Unit',
     data_citation = '...',
-    project = 'Excellence in Agronomy - Digital Green Ethiopia Validation',
+    project = 'Excellence in Agronomy;Digital Green Ethiopia;Validation',
     data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
     carob_date="2024-04-25",
     treatment_vars = "N_fertilizer;P_fertilizer;S_fertilizer"
