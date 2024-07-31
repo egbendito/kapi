@@ -28,21 +28,20 @@ carob_script <- function(path) {
       group = group,
       license = 'Some license here...',
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy - Rwanda RAB Add On',
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+      project = 'Excellence in Agronomy;Rwanda RAB; AddOn',
+      data_type = "survey", # or, e.g. "on-farm experiment", "survey", "compilation"
       carob_date="2024-06-18",
-      treatment_vars = "longitude;latitude"
+      treatment_vars = "none"
    )
    
    # Manually build path (this can be automated...)
    ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-AddOn/", full.names = T))
    
-   # Retrieve relevant file
    f <- ff[basename(ff) == "EiA_AddOn_Full_Survey_RAB_Rwanda_2023_11_08.xlsx"]
-   # Read relevant file
-   ## Process geo data and some crop managment practices 
+   # Read file
    r <- carobiner::read.excel(f,sheet = "EiA_AddOn_Survey_SNSRwanda_Fina")
    r <- r[-1,] ## remove the first row of r
+   ## Process file
    names(r) <- gsub("_index","index",names(r))
    d <- data.frame(
       country = r$country,
@@ -61,7 +60,7 @@ carob_script <- function(path) {
       #previous_crop=r$crop_cultivated_all,
       fertilizer_amount= as.numeric(r$fertiliser_amount),
       fertilizer_type= r$fertiliser_type,
-      irrigation_dates= r$Irrigation_months, 
+      irrigation_number= sapply(strsplit(r$Irrigation_months, " "), length), ## in month
       irrigation_method= r$irrigation_technique,
       irregation_source= r$Irrigation_source,
       irrigated= r$land_irrigated, 
@@ -154,7 +153,9 @@ carob_script <- function(path) {
    d$latitude[!is.na(d$lat)] <- d$lat[!is.na(d$lat)]
    d$lon <- d$lat <- NULL
    
-   message("yield is given in kg,bacs and tonnes instead of kg/ha")
+   d$irrigated <- as.logical(d$irrigated)
+   
+   message("yield is given in kg,bags and tonnes instead of kg/ha")
    
    carobiner::write_files(dset, d, path=path)
 }
