@@ -53,11 +53,11 @@ carob_script <- function(path) {
      country = "Cambodia",
      adm1 = r1$province,
      adm2 = r1$district,
-     location = r1$commune,
+     location = r1$commune, 
      site = r1$village,
      crop = "rice",
      variety = r1$variety,
-     plot_area = r1$area_ha*10000,
+     plot_area = r1$area_ha*10000, # We are converting to m2
      seed_source = r1$seed_source,
      # land_prep_method	= paste(ifelse(r1$tillage_no > 0, "conventional", ""),)
      season = "dry",
@@ -93,7 +93,7 @@ carob_script <- function(path) {
      seed_source = r2$seed_source,
      # land_prep_method	= paste(ifelse(r2$tillage_no > 0, "conventional", ""),)
      season = "wet",
-     planting_date = r2$date_sowing,
+     planting_date = as.character(as.Date(r2$date_sowing)),
      fertilizer_type = gsub(";$", "", paste0(ifelse(r2$fert_basal_urea_yn == "yes", "urea;", ""),
                                              ifelse(r2$fert_basal_ammoniumsulphate_yn == "yes", "DAS;", ""),
                                              ifelse(r2$fert_basal_boron_yn == "yes", "H3BO3;", ""),
