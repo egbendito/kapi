@@ -108,5 +108,3 @@ carob_script <- function(path) {
    
    carobiner::write_files(dset, d, path=path)
 }
-
-write("eia,crop; soil,eia data", file = list.files(system.file("terms", package="carobiner"), full.names = TRUE), append = TRUE)
