@@ -23,6 +23,7 @@ carob_script <- function(path) {
       uri = carobiner::simple_uri(uri),
       dataset_id = uri,
       authors =NA,
+      publication=NA,
       data_institute =NA,
       title = NA,
       group = group,
@@ -31,7 +32,8 @@ carob_script <- function(path) {
       project = 'Excellence in Agronomy;Rwanda RAB; AddOn',
       data_type = "survey", # or, e.g. "on-farm experiment", "survey", "compilation"
       carob_date="2024-06-18",
-      treatment_vars = "none"
+      treatment_vars = "none",
+      response_vars= "none"
    )
    
    # Manually build path (this can be automated...)
@@ -40,13 +42,16 @@ carob_script <- function(path) {
    f <- ff[basename(ff) == "EiA_AddOn_Full_Survey_RAB_Rwanda_2023_11_08.xlsx"]
    # Read file
    r <- carobiner::read.excel(f,sheet = "EiA_AddOn_Survey_SNSRwanda_Fina")
-   r <- r[-1,] ## remove the first row of r
+   ## removing the first row 
+   r <- r[-1,] 
    ## Process file
    names(r) <- gsub("_index","index",names(r))
+   
    d <- data.frame(
       country = r$country,
       on_farm = FALSE,
       is_survey = TRUE,
+      geo_from_source= TRUE,
       adm1=r$admin_1,
       adm2=r$admin_2,
       adm3=r$admin_3,
@@ -56,11 +61,11 @@ carob_script <- function(path) {
       latitude=as.numeric(r$latitude),
       currency=r$local_currency,
       trial_id = r$barcodehousehold,
-      technology_use= r$use_case_technology, ## Not a carob variable
-      #previous_crop=r$crop_cultivated_all,
+      technology_used= r$use_case_technology, ## Not a carob variable
       fertilizer_amount= as.numeric(r$fertiliser_amount),
       fertilizer_type= r$fertiliser_type,
       irrigation_number= sapply(strsplit(r$Irrigation_months, " "), length), ## in month
+      irrigation_dates= r$Irrigation_months, 
       irrigation_method= r$irrigation_technique,
       irregation_source= r$Irrigation_source,
       irrigated= r$land_irrigated, 
@@ -93,12 +98,16 @@ carob_script <- function(path) {
    p <- carobiner::fix_name(d$irrigation_method)
    p <- gsub("furrow can bucket","furrow",p)
    p <- gsub("can furrow hose","furrow",p)
-   p <- gsub("bucket flooding","flooding",p)
+   p <- gsub("bucket flooding","uncontrolled flooding",p)
    p <- gsub("can furrow","furrow",p)
-   p <- gsub("can sprinkler furrow","sprinkler; furrow",p)
+   p <- gsub("can sprinkler furrow","furrow",p)
    p <- gsub("micro-basin hose","basin",p)
-   p <- gsub("micro-basin","basin",p)
+   p <- gsub("can bucket|bucket can|bucket other","basin",p)
+   p <- gsub("micro-basin|bucket","basin",p)
+   p <- gsub("hose can|can hose|hose","continuous flooding",p)
+   p <- gsub("can|other|can other","unknown",p)
    d$irrigation_method <- p
+   d$irrigation_method[d$irrigation_method=="flooding"] <- "continuous flooding" 
    
    ### Process yield data 
    r1 <- carobiner::read.excel(f,sheet = "crop_repeat")
@@ -155,9 +164,27 @@ carob_script <- function(path) {
    
    d$irrigated <- as.logical(d$irrigated)
    
+   # # Fix irrigation dates
+   
+   d$irrigation_dates <- gsub(" no_answer", "", d$irrigation_dates)
+   d$irrigation_dates <- gsub(" ", "; ", d$irrigation_dates)
+   d$irrigation_dates <- as.character(gsub("jan", "2023-01", d$irrigation_dates))
+   d$irrigation_dates <- gsub("feb", "2023-02", d$irrigation_dates)
+   d$irrigation_dates <- gsub("mar", "2023-03", d$irrigation_dates)
+   d$irrigation_dates <- gsub("apr", "2023-04", d$irrigation_dates)
+   d$irrigation_dates <- gsub("may", "2023-05", d$irrigation_dates)
+   d$irrigation_dates <- gsub("jun", "2023-06", d$irrigation_dates)
+   d$irrigation_dates <- gsub("jul", "2023-07", d$irrigation_dates)
+   d$irrigation_dates <- gsub("aug", "2023-08", d$irrigation_dates)
+   d$irrigation_dates <- gsub("sep", "2023-09", d$irrigation_dates)
+   d$irrigation_dates <- gsub("oct", "2023-10", d$irrigation_dates)
+   d$irrigation_dates <- gsub("nov", "2023-11", d$irrigation_dates)
+   d$irrigation_dates <- gsub("dec", "2022-12", d$irrigation_dates)
+   
    message("yield is given in kg,bags and tonnes instead of kg/ha")
+   
    
    carobiner::write_files(dset, d, path=path)
 }
 
-# carob_script(path)
+#carob_script(path)
