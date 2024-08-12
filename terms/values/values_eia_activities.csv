@@ -1,0 +1,8 @@
+"name","long_name","description"
+"addon","Add-On","EiA step-?"
+"validation","Validation","EiA step-5"
+"piloting","Piloting","EiA step-6"
+"scaling","Scaling","EiA step-7"
+"experiment","Experiment","Some form of experimental data the use case has collected to calibrate or test their MVP. These include Nutrient Ommission Trials (NOTs), planting date experiments, or other form of researcher managed experiments."
+"survey","Survey","Previous surveys conducted by the use case. This can be linked to baselines, etc."
+"other","Other","Any other type of datasety the use case has acquired such as compiled data provided by partners, literature review, or other."
