@@ -1,0 +1,27 @@
+# This is a comment.
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+*       @egbendito
+
+# Order is important; the last matching pattern takes the most
+# precedence. When someone opens a pull request that only
+# modifies JS files, only @js-owner and not the global
+# owner(s) will be requested for a review.
+*.R    @egbendito @cedricngakou #This is an inline comment.
+
+# In this example, @doctocat owns any files in the build/logs
+# directory at the root of the repository and any of its
+# subdirectories.
+/terms/ @egbendito
+
+# In this example, own any file in an <directory>
+# anywhere in your repository.
+# terms/ @egbendito
+
+# In this example, any change inside the `/scripts` directory
+# will require approval from @egbendito or @cedricngakou or the carobiners team in the EiA2030 organization.
+/scripts/ @egbendito @cedricngakou @EiA2030/carobiners
