@@ -18,20 +18,20 @@ carob_script <- function(path) {
    
    meta <- data.frame(
       # Need to fill-in metadata...
-      # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = carobiner::simple_uri(uri),
       dataset_id = uri,
       authors = "Mary Jane;John Do",
-      data_citation="...",
-      data_institute = NA ,
+      data_institute = "AfricaRice", 
       title = NA,
-      description = "Nigeria-ATAFI-Validations",
+      #description ="Nigeria-ATAFI-Validations",
+      license = NA,
       group = group,
       publication=NA,
-      license = 'Some license here...',
+      use_case ="WA-Rice-ATAFI/MOVE",
+      activity = 'validation',
       carob_contributor = 'Cedric Ngakou',
       project = 'Excellence in Agronomy; Nigeria-ATAFI-Validations',
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+      data_type = "on-farm experiment", 
       carob_date="2024-08-08",
       treatment_vars = "N_fertilizer;P_fertilizer;K_fertilizer",
       response_vars= "yield_moisture"
@@ -59,7 +59,8 @@ carob_script <- function(path) {
       #production_sys= r$Production_System,
       variety= r$Variety.used,
       rep= as.integer(r$Replicate),
-      plot_area= as.numeric(substr(r$planting_Density,1,3))**2,# m2
+      row_spacing= as.numeric(substr(r$planting_Density,1,3))*100,# cm
+      plant_spacing= as.numeric(substr(r$planting_Density,1,3))*100,# cm
       planting_method= r$planting_Method,
       planting_date= as.character(r$sowing_date),
       transplanting_date= as.character(r$transplanting_Date),
@@ -76,7 +77,7 @@ carob_script <- function(path) {
       KUE_fertilizer= r$KUE.kg.kg, # K Use Efficiency (kg/kg K)
       Gross_revenue =r$Gross.revenu.USD.ha,# Gross.revenue.on.fertilizer.cost.USD.ha # Gross revenue on fertilizer cost = Gross revenue – total fertilizer cost
       currency= "USD",
-      trial_id= r$Activity.name,
+      trial_id= r$HHID,
       treatment= r$Experimental.treatment.name
    )
    
@@ -102,7 +103,7 @@ carob_script <- function(path) {
             NA, -10.7818534, -7.6001249, -7.9327807)
    )
    
-   ## Tintimba,Maninkoura,Baturu,Lenguétou, Sanancoroni are unknown location and we have  set longitude and latitude of these location to NA 
+   ## Tintimba,Maninkoura,Baturu,Lenguétou, Sanancoroni are unknown locations. We have set longitude and latitude of theses locations to NA 
    
    d <- merge(d,geo,by="adm1",all.x= TRUE)
    
@@ -116,4 +117,5 @@ carob_script <- function(path) {
 }
 
 #carob_script(path)
+
 
