@@ -18,13 +18,16 @@ carob_script <- function(path) {
    
    meta <- data.frame(
       # Need to fill-in metadata...
+      uri = carobiner::simple_uri(uri),
+      dataset_id = uri,
       authors = "Mary Jane;John Do",
-      data_institute = "AAA-BBB" , # partner name 
+      data_institute = "AfricaRice", 
       title = NA,
-      description = "Nigeria-ATAFI-Validations",
+      #description ="Nigeria-ATAFI-Validations",
+      license = NA,
       group = group,
       publication=NA,
-      use_case = NA,
+      use_case ="WA-Rice-ATAFI/MOVE",
       activity = 'validation',
       carob_contributor = 'Cedric Ngakou',
       project = 'Excellence in Agronomy; Nigeria-ATAFI-Validations',
