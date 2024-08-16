@@ -27,12 +27,18 @@ carob_script <- function(path) {
     # data_institutions = "International Institute of Tropical Agriculture (IITA)",
     # title = NA,
     # description = "Validations of the SAA Nigeria Use Case MVP",
+    # publication = NA,
+    # data_institution = 'ABC; IITA',
     # group = group,
     # license = 'Some license here...',
+    treatment_vars = 'none',
+    response_vars = 'none',
     carob_contributor = 'Eduardo Garcia Bendito',
     # data_citation = '...',
-    project = 'Excellence in Agronomy - GAIP Ghana validations',
-    data_type = "survey", # or, e.g. "on-farm experiment", "survey", "compilation"
+    project = 'Excellence in Agronomy',
+    use_case = 'GH-CerLeg-GAIP',
+    activity = 'validation',
+    data_type = "survey",
     carob_date="2024-05-22"
   )
   
@@ -56,21 +62,30 @@ carob_script <- function(path) {
   
   d <- data.frame(
     country = "Ghana",
+    hhid = ds$`Record id`,
+    is_survey = TRUE,
+    on_farm = FALSE,
     location = data.frame(sapply(ds$`Name of community`, function(x) gsub("\\s*\\([^\\)]+\\)", "", x)))[[1]],
     longitude = locs$longitude,
     latitude = locs$latitude,
+    geo_uncertainty = locs$acc,
+    geo_from_source = TRUE,
     crop = crop,
     intercrops = icrops, # could also be crop_rotation
     land_tenure = ifelse(ds$`Do you own land(s) in the community?` == "(A)Yes", "own", "lease"),
     land_ownedby = data.frame(sapply(ds$`If YES, what type of ownership?`, function(x) gsub("\\s*\\([^\\)]+\\)", "", x)))[[1]],
     cropland_used = data.frame(sapply(ds$`How many acres of the land do you allocate for farming?`, function(x) gsub("\\s*\\([^\\)]+\\)", "", x)))[[1]],
-    fertilizer_type = gsub(",", "; ", data.frame(sapply(ds$`What type of fertilizers do you use?`, function(x) gsub("\\s*\\([^\\)]+\\)", "", x))))[[1]]
+    fertilizer_type = tolower(paste0(na.omit(unique(unlist(strsplit(data.frame(sapply(ds$`What type of fertilizers do you use?`, function(x) gsub("\\s*\\([^\\)]+\\)", "", x)))[[1]], ",", fixed = T)), na.rm = T)), collapse = "; "))
   )
   
   # Fix land area
   d$cropland_used[grep("1-4", d$cropland_used)] <- 2
   d$cropland_used[grep("5-10", d$cropland_used)] <- 7.5
   d$cropland_used[grep("16 and above", d$cropland_used)] <- 16
+  d$fertilizer_type <- gsub("npk", "NPK", d$fertilizer_type)
+  d$fertilizer_type <- gsub("ammonia", "AN", d$fertilizer_type)
+  d$crop <- gsub("soyabeans", "soybean", d$crop)
+  d$cropland_used <- as.numeric(d$cropland_used)*0.4 # to Ha
   
   carobiner::write_files(dset, d, path=path)
 }
