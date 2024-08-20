@@ -17,22 +17,24 @@ carob_script <- function(path) {
    uri <- "doi:Chinyanja-Solidaridad-Soy-NOT"
    group <- "eia"
    
-   dset <- data.frame(
-      # Need to fill-in metadata...
+   meta <- data.frame(
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = carobiner::simple_uri(uri),
       dataset_id = uri,
-      authors =NA,
+      authors ="Mary Jane;John Doe",
+      publication= NA,
       data_institute =NA,
       title = NA,
       group = group,
-      license = 'Some license here...',
+      license = NA,
       carob_contributor = 'Cedric Ngakou',
       project = 'Excellence in Agronomy - Chinyanja-Solidaridad-Soy-NOT',
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+      data_type = "on-farm experiment",
       carob_date="2024-08-02",
       response_vars= "yield",
-      treatment_vars = "N_fertilizer;P_fertilizer;K_fertilizer;intercrops"
+      use_case = 'CH-CerLeg-Solidaridad',
+      activity = 'experiment',
+      treatment_vars ="N_fertilizer;P_fertilizer;K_fertilizer;intercrops"
    )
    
    # Manually build path (this can be automated...)
@@ -47,8 +49,8 @@ carob_script <- function(path) {
    
    ### Read file
    r <- carobiner::read.excel.hdr(f,sheet = "Crop_mixes",skip=3,fix_names = TRUE)
-   r <- r[,-53] ## remove empty column name
-   #names(r) <- substr(names(r), 1, 25)
+   ## remove empty column name
+   r <- r[,-53] 
    
    d <- data.frame(
       treatment= r$Treat.description,
@@ -60,10 +62,11 @@ carob_script <- function(path) {
       variety= tolower(r$variety),
       #crop_system= r$intercrop.sole,
       planting_time= r$Time.of.planting,
-      plot_length= r$Row.length.cm,
+      plot_width= r$Row.length.cm,
       shelling_percentage= as.numeric(r$Shelling.pct),
       yield= r$Grain.kg.ha,
       fwy_total= r$Total.Biomass.kg.ha,
+      harvest_index= r$HI,
       plot_nbr= r$Plot.number,
       intercrops= ifelse(grepl("intercrop|inter crop",r$intercrop.sole) & grepl("Maize",r$Crop) ,"soybean",
                          ifelse(grepl("intercrop|inter crop",r$intercrop.sole) & grepl("Soybean",r$Crop),"maize","none"))
@@ -129,12 +132,13 @@ carob_script <- function(path) {
    d$longitude <- 32.5638197
    
    ### Process MOZAMBIQUE  Angonia yeld data
-   rr <- carobiner::read.excel.hdr(f1,sheet = "Summary validations",skip=0)
-   col <- c(28:41)
+   rr <- carobiner::read.excel.hdr(f1, sheet = "Summary validations",skip=0)
+   ### Keep useful variables 
+   col <- c(28:42) 
    rr <- rr[,col]
-   colnames(rr) <- rr[4,]
+   colnames(rr) <- rr[4,] ### name the variables with appropriate name 
    rr <- rr[-c(1:4),]
-   row.names(rr) <- NULL
+   row.names(rr) <- NULL ### reset index 
    
    dd <- data.frame(
       variety= rr$Variety,
@@ -143,6 +147,7 @@ carob_script <- function(path) {
       yield= rr$`Grain (kg/ha)`,
       fwy_total= rr$`Total Biomass (kg/ha)`,
       shelling_percentage= as.numeric(rr$`Shelling %`),
+      harvest_index= as.numeric(rr$HI),
       country= "Mozambique",
       adm1="Angonia",
       location= "Úlonguè",
@@ -154,7 +159,8 @@ carob_script <- function(path) {
    ### Process NOT TRIALS IIAM Ulongue
    
    rr1 <- carobiner::read.excel.hdr(f2,sheet = "NOT TRIALS 2022-23",skip=0)
-   col <- c(25:46) ## useful columns
+   ## Keep useful columns
+   col <- c(25:46) 
    rr1 <- rr1[,col]
    colnames(rr1) <- rr1[107,] 
    rr1 <- rr1[-c(1:107),] ## header 
@@ -174,7 +180,7 @@ carob_script <- function(path) {
       yield= rr1$`Grain (kg/ha)`,
       fwy_total= rr1$`Total Biomass (kg/ha)`,
       shelling_percentage= as.numeric(rr1$`Shelling %`),
-      dist= round(as.numeric(rr1$`average distances`),2),
+      distance= round(as.numeric(rr1$`average distances`),2),
       inoculated= ifelse(grepl("Innoculated",rr1$`Innoc Descrip`),TRUE,FALSE),
       country= "Mozambique",
       adm1="Angonia",
@@ -195,27 +201,28 @@ carob_script <- function(path) {
    #     nodule_weight=rr2$NN,
    #     rep= rr2$Rep,
    #     treatment= rr2$trat,
-   #     dist= rr2$Distancia
+   #     distance= rr2$Distancia
    #   )
    # }) 
    
    #dd2 <- do.call(rbind,dd2)
-   #dd2$dist <- round(dd2$dist,2)
+   #dd2$distance <- round(dd2$distance,2)
    
-   #dd1 <- merge(dd1,dd2,by=c("rep","treatment","dist"),all.x=TRUE)
+   #dd1 <- merge(dd1,dd2,by=c("rep","treatment","distance"),all.x=TRUE)
    
    dd1$treatment <- paste("N",dd1$N_fertilizer,"P",dd1$P_fertilizer,"K",dd1$K_fertilizer,sep="")
    dd1$row_spacing <- 45
    dd1$plant_spacing <- 5
    dd1$land_prep_method <- "conventional"
    dd1$maturity_date <- "2023-03-23"
-   dd1$weeding_dates <- "2023-01-20" 
+   dd1$weeding_dates <- "2023-01-20"
+   dd1$fertilizer_date <- "2022-12-20"
    dd1$first_rain_date <- "2022-12-18" 
    
    
    d <- carobiner::bindr(d,dd,dd1)
    
-   d$plot_nbr <- d$dist <- NULL
+   d$plot_nbr <- d$distance <- NULL
    
    d$trial_id <- as.character(1:nrow(d))
    d$irrigated <- as.logical(NA)
@@ -238,9 +245,9 @@ carob_script <- function(path) {
    d$plot_area <- as.numeric(d$plot_area)
    d$weeding_times <- as.integer(d$weeding_times)
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
    
 }
 
-# carob_script(path)
+#carob_script(path)
 
