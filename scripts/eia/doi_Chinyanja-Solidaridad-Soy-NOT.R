@@ -28,8 +28,8 @@ carob_script <- function(path) {
       group = group,
       license = NA,
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy - Chinyanja-Solidaridad-Soy-NOT',
-      data_type = "on-farm experiment",
+      project = 'Excellence in Agronomy',
+      data_type = "on-station experiment",
       carob_date="2024-08-02",
       response_vars= "yield",
       use_case = 'CH-CerLeg-Solidaridad',
@@ -89,6 +89,7 @@ carob_script <- function(path) {
    d$plant_density <- (d$plant_density/d$plot_area)*10000
    d <- d[!is.na(d$crop),]
    
+   d$planting_time <- NULL
    # process crop management file 
    
    r2 <- t(carobiner::read.excel.hdr(f,sheet = "crop management data",skip=5,fix_names = TRUE))
@@ -238,6 +239,10 @@ carob_script <- function(path) {
    d$land_prep_method <- gsub("Ridge","ridge tillage", d$land_prep_method)
    
    d$intercrops[is.na(d$intercrops)] <- "none"
+   
+   ## Fixing harvest date 
+   d$harvest_date[grep("2020-05-22",d$harvest_date)] <- "2021-05-22"
+   
    ## data type
    d$yield <- as.numeric(d$yield)
    d$rep <- as.integer(d$rep)
