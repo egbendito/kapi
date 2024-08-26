@@ -57,71 +57,75 @@ carob_script <- function(path) {
    rms <- read.csv(fms)
    rmf <- read.csv(fmf)
    
-## Processing maize data
+   ## Processing maize data
    
    # maizeClean
    dh <- data.frame(
-      trial_id= rmc$HHID,
-      event= rmc$event,
-      adm1= rmc$stateEA,
-      location= rmc$lga,
-      year= rmc$Year,
-      country=rmc$country,
-      longitude=rmc$Longitude,
-      latitude= rmc$Latitude,
-      yield_SSR= rmc$maizeGrainFW_plot_SSR,
-      yield_BRR= rmc$maizeGrainFW_plot_BRR,
-      yield_ZCC= rmc$maizeGrainFW_plot_ZCC,
-      land_prep_method= rmc$tillageMethod1
-      
+     trial_id = rmc$HHID,
+     event = rmc$event,
+     adm1 = rmc$stateEA,
+     location = rmc$lga,
+     year = rmc$Year,
+     country = rmc$country,
+     plants_SSR = rmc$nrPlants_SSR,
+     plants_BRR = rmc$nrPlants_BRR,
+     plants_ZCC = rmc$nrPlants_ZCC,
+     cobs_SSR = rmc$maizeCobsFW_plot_SSR,
+     cobs_BRR = rmc$maizeCobsFW_plot_BRR,
+     cobs_ZCC = rmc$maizeCobsFW_plot_ZCC,
+     yield_SSR = rmc$maizeGrainFW_plot_SSR,
+     yield_BRR = rmc$maizeGrainFW_plot_BRR,
+     yield_ZCC = rmc$maizeGrainFW_plot_ZCC,
+     land_prep_method = rmc$tillageMethod1,
+     harvest_date = rmc$harvestDate
    )
    
-   # Event1: planting
-   # Event2: 
-   # Event3: 
-   # Event4:
-   # Event5: 
+   # Maize
+   # Event1: Planting
+   # Event2: 1st fertilizer application
+   # Event3: 2nd fertilizer application
+   # Event4: Monitoring flowering
+   # Event5: Harvesting
    ## Selecting the harvest event
    dh <- dh[dh$event == "event5M",]
    
-##  plotDimS
+   dh1 <- rmc[rmc$event == "event1M", c("HHID", "plotL1_BRR", "plotW1_BRR", "plotL1_SSR", "plotW1_SSR", "plotL1_ZCC", "plotW1_ZCC")]
+   dh1$plot_area_BRR <- (dh1$plotL1_BRR * dh1$plotW1_BRR)/10000
+   dh1$plot_area_SSR <- (dh1$plotL1_SSR * dh1$plotW1_SSR)/10000
+   dh1$plot_area_ZCC <- (dh1$plotL1_ZCC * dh1$plotW1_ZCC)/10000
+   dh1 <- dh1[,c(1,8,9,10)]
+   colnames(dh1)[1] <- "trial_id"
+   dmh <- merge(dh,dh1, by=c("trial_id"), all.x= TRUE) 
    
-   dh1 <- data.frame(
-      trial_id= rmp$HHID,
-      adm1=  rmp$state,
-      plot_area_BRR= rmp$plotSizeBRR,
-      plot_area_SSR= rmp$plotSizeSSR,
-      plot_area_ZCC= rmp$plotSizeZCC
-   )
-   
-   dmh <- merge(dh,dh1, by=c("trial_id","adm1"), all.x= TRUE) 
-   
-## grainMoistureM
+   ## grainMoistureM
    
    dh2 <- data.frame(
-      trial_id= rmm$HHID,
-      yield_moisture_BRR= rmm$moistureBRR,
-      yield_moisture_SSR= rmm$moistureSSR,
-      yield_moisture_ZCC= rmm$moistureZCC
+     trial_id= rmm$HHID,
+     yield_moisture_BRR= rmm$moistureBRR,
+     yield_moisture_SSR= rmm$moistureSSR,
+     yield_moisture_ZCC= rmm$moistureZCC
    )
    
    dmh <- merge(dmh,dh2, by=c("trial_id"), all.x= TRUE) 
    
-## Maize fertilizer (NEfert)
+   ## Maize fertilizer (NEfert)
    
    dh3 <- data.frame(
-      trial_id= rmf$HHID,
-      adm1= rmf$state,
-      elevation= rmf$Altitude,
-      planting_date= rmf$plantingDate,
-      OM_used= ifelse(grepl("yes",rmf$orgApply1)|grepl("yes",rmf$orgApply2),TRUE,FALSE),
-      fertilizer_price= as.character(rowSums(rmf[,c("costUrea","costNPK")])),
-      variety= rmf$variety,
-      row_spacing= substr(rmf$plantingDensity,1,4),
-      plant_spacing= substr(rmf$plantingDensity,8,11),
-      fertilizer_amount_BRR= rmf$NPKBRR + rmf$plotUreaSplit1BRR+ rmf$plotUreaSplit2BRR,
-      fert= rmf$plotNPKBRR_BE + rmf$plotUreaBRR_BE,
-      fertilizer_type_BRR= "NPK;urea"
+     trial_id= rmf$HHID,
+     adm1= rmf$state,
+     longitude =rmf$Longitude,
+     latitude = rmf$Latitude,
+     elevation = rmf$Altitude,
+     geo_uncertainty = rmf$Accuracy,
+     planting_date= rmf$plantingDate,
+     OM_used= ifelse(grepl("yes",rmf$orgApply1)|grepl("yes",rmf$orgApply2),TRUE,FALSE),
+     fertilizer_price= as.character(rowSums(rmf[,c("costUrea","costNPK")])),
+     variety= rmf$variety,
+     row_spacing= substr(rmf$plantingDensity,1,4),
+     plant_spacing= substr(rmf$plantingDensity,8,11),
+     fertilizer_amount_BRR= rmf$NPKBRR + rmf$plotUreaSplit1BRR+ rmf$plotUreaSplit2BRR,
+     fert= rmf$plotNPKBRR_BE + rmf$plotUreaBRR_BE,
+     fertilizer_type_BRR= "NPK;urea"
    )
    
    dh3$fertilizer_amount_BRR[is.na(dh3$fertilizer_amount_BRR)] <- dh3$fert[is.na(dh3$fertilizer_amount_BRR)]
@@ -138,17 +142,22 @@ carob_script <- function(path) {
    
    var <- names(dmh)[grep("SSR|BRR|ZCC",names(dmh))] 
    dm <- lapply(c("_BRR","_SSR","_ZCC"),\(i){
-      dd <- dmh[,var]
-      dmh[var] <- NULL
-      dd <- dd[,names(dd)[grep(i,names(dd))]]
-      names(dd) <- gsub(i,"", names(dd))
-      dd$treatment <- gsub("_","",i)
-      cbind(dmh,dd)
+     dd <- dmh[,var]
+     dmh[var] <- NULL
+     dd <- dd[,names(dd)[grep(i,names(dd))]]
+     names(dd) <- gsub(i,"", names(dd))
+     dd$treatment <- gsub("_","",i)
+     cbind(dmh,dd)
    })
    
    dm <- do.call(carobiner::bindr, dm)
-   dm$yield[!is.na(dm$plot_area)] <- (dm$yield[!is.na(dm$plot_area)]/dm$plot_area[!is.na(dm$plot_area)])*10000
+   dm$yield[!is.na(dm$plot_area)] <- (dm$yield[!is.na(dm$plot_area)]/dm$plot_area[!is.na(dm$plot_area)])
+   dm$yield <- ifelse(is.na(dm$plot_area), NA, dm$yield)
+   dm$plant_density[!is.na(dm$plot_area)] <- (dm$plants[!is.na(dm$plot_area)]/dm$plot_area[!is.na(dm$plot_area)])
+   dm$cob_density[!is.na(dm$plot_area)] <- (dm$cobs[!is.na(dm$plot_area)]/dm$plot_area[!is.na(dm$plot_area)])
    dm$crop <- "maize"
+   dm$planting_date <- as.character(as.Date(dm$planting_date, "%b %d, %Y"))
+   dm$harvest_date <- as.character(as.Date(dm$harvest_date, "%b %d, %Y"))
    
 ## Processing rice data 
    
