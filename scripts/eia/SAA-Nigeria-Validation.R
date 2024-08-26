@@ -5,160 +5,264 @@
 # 2. Data reads are still unstable and user needs to have access
 # 3. License is missing (CC-BY)?
 # 4. Many valuable variables that need to be integrated still...
-# 5. ...
-# 6.
+
 
 carob_script <- function(path) {
-  
-  "
+   
+   "
 	SOME DESCRIPTION GOES HERE...
 
 "
-  
-  uri <- "doi:Nigeria-SAA-Validation"
-  group <- "eia"
-  
-  dset <- data.frame(
-    # Need to fill-in metadata...
-    # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-    uri = carobiner::simple_uri(uri),
-    dataset_id = uri,
-    authors = "Christine Kreye",
-    data_institutions = "International Institute of Tropical Agriculture (IITA)",
-    title = NA,
-    description = "Validations of the SAA Nigeria Use Case MVP",
-    group = group,
-    license = 'Some license here...',
-    carob_contributor = 'Eduardo Garcia Bendito',
-    data_citation = '...',
-    project = 'Excellence in Agronomy - SAA Nigeria validations',
-    data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
-    carob_date="2024-05-22"
-  )
-  
-  # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
-  
-  # Maize
-  fmc <- ff[basename(ff) == "maizeClean.csv"]
-  fmp <- ff[basename(ff) == "plotDimS.csv"]
-  fmm <- ff[basename(ff) == "grainMoistureM.csv"]
-  fms <- ff[basename(ff) == "scoreHigh.csv"]
-  fmf <- ff[basename(ff) == "NEfert.csv"]
-  
-  # Read relevant file(s)
-  rmc <- read.csv(fmc)
-  rmp <- read.csv(fmp)
-  rmm <- read.csv(fmm)
-  rms <- read.csv(fms)
-  rmf <- read.csv(fmf)
-  
-  # Process maize files
-  dh <- rmc[,c("EAID", "HHID", "event", "stateEA",
-               "maizeGrainFW_plot_SSR",
-               "maizeGrainFW_plot_BRR",
-               "maizeGrainFW_plot_ZCC",
-               "plotL1_BRR", "plotL2_BRR",
-               "plotW1_BRR", "plotW2_BRR",
-               "plotL1_SSR", "plotL2_SSR",
-               "plotW1_SSR", "plotW2_SSR",
-               "plotL1_ZCC", "plotL2_ZCC",
-               "plotW1_ZCC", "plotW2_ZCC")]
-  names(dh)[names(dh) %in% c("maizeGrainFW_plot_SSR", "maizeGrainFW_plot_BRR", "maizeGrainFW_plot_ZCC")] <- c("SSR_Yplot", "BRR_Yplot", "ZCC_Yplot")
-  
-  # Event1: planting
-  # Event2: 
-  # Event3: 
-  # Event4:
-  # Event5: 
-  # Selecting the harvest event
-  dh <- dh[dh$event == "event5M",]
-  
-  
-
-  # Rice
-  frc <- ff[basename(ff) == "riceClean.csv"]
-  frm <- ff[basename(ff) == "grainMoistureR.csv"]
-  frs <- ff[basename(ff) == "dRed.csv"]
-  frf <- ff[basename(ff) == "Ralfert.csv"]
-  
-  
-  
-  # Retrieve relevant file
-  f <- ff[basename(ff) == "EiA_Rabi_Wheat_Production_survey_data_2022-23.csv"]
-  # Read relevant file
-  # r <- read.csv(f, colClasses = "character") # convert everything to character so it be pivoted longer
-  r <- read.csv(f)
-  # Build initial DF ... Start from here
-  r <- Filter(function(x)!all(is.na(x)), r)# remove empty columns
-  r1 <- r[,2:162] # separate T1
-  names(r1) <- stringr::str_sub(names(r1),3) # remove the first two characters from colnames 
-  names(r1) <- sub("_T1","", names(r1))
-  names(r1) <- sub("T1","", names(r1))
-  r1$treatment <- "T1" # create variable T1
-  r2 <- r[,c(2:21,163:300)] # separate T2
-  names(r2) <- stringr::str_sub(names(r2),3) # remove the first two characters from colnames 
-  names(r2) <- sub("_T2","", names(r2))
-  names(r2) <- sub("T2","", names(r2))
-  r2$treatment <- "T2" # create variable T2
-  r <- dplyr::bind_rows(r1,r2)
-  d <- data.frame(
-    country = "India",
-    crop = "wheat",
-    yield_part = "grain",	
-    on_farm = TRUE,
-    is_survey = TRUE,
-    adm1=r$state,
-    adm2=r$district,
-    adm3=r$subDistrict,
-    adm4=r$village,
-    trial_id = rep(1:71, 2),
-    plot_name=r$plot, # Not in carob
-    location=r$location,
-    season=r$season,
-    latitude=r$PlotGPS.Latitude,
-    longitude=r$PlotGPS.Longitude,
-    elevation=r$PlotGPS.Altitude,
-    gps_accuracy=r$PlotGPS.Accuracy, # Not in carob
-    crop_cut=r$cropCutDone, 
-    gender=r$fGender, # Not found in carob
-    treatment=r$treatment,
-    variety=r$VarName, 
-    harvest_date=r$harvYear,
-    plot_area=r$EiAcropAreaAcre,
-    soil_texture=r$soilTexture,
-    soil_quality=r$soilPerception,
-    previous_crop=r$prevCrop,
-    land_prep_method=r$LandPrep,
-    transplanting_date=r$seedingSowingTransDate,
-    seed_source=r$seedSource,
-    seed_amount=r$cropSeedAmt,
-    irrigated=r$irrigate,
-    irrigation_source=r$irrigSource,
-    irrigation_stage=r$irrigGrthStage,
-    fertilizer_type="DAP;urea;NPK;NPKS;gypsum",
-    N_fertilizer=r$Nitrogen_Kg_ha,
-    P_fertilizer=r$Phosphorus_Kg_ha,
-    K_fertilizer=r$Potassium_Kg_ha,
-    drought_stress=r$drought,
-    drought_stage=r$droughtGS, # not in carob
-    crop_area=r$EiAcropAreaAcre, # Not in carob
-    harvest_days=r$cropDurationDays,# assumed to be days to harvest
-    harvestMethod=r$harvestMethod, # not in carob
-    insecticide_used=r$insecticides,
-    pesticide_used=r$pesticides,
-    lodging=r$lodgingPercent,# not in carob
-    threshing_method=r$threshing, # not in carob
-    yield=r$tonPerHectare # assume to be yield
-  )
-# Convert from tons/ha to kg/ha
-  d$yield <- d$yield*1000
-
-  # Recode variables
-  d$previous_crop <- dplyr::recode(d$previous_crop,
-                            "Rice"="rice","Wheat"="wheat")
-  d$previous_crop[d$previous_crop=="Fallow"] <- NA # Fallow not a crop
-  d$land_prep_method <- ifelse(d$land_prep_method == "NoTillage","no-till","tillage")
-
-  carobiner::write_files(dset, d, path=path)
+   
+   uri <- "doi:Nigeria-SAA-Validation"
+   group <- "eia"
+   
+   dset <- data.frame(
+      # carobiner::read_metadata(uri, path, group, major=2, minor=0),
+      uri = carobiner::simple_uri(uri),
+      dataset_id = uri,
+      authors = "Christine Kreye",
+      data_institute = "IITA", #International Institute of Tropical Agriculture",
+      title = NA,
+      publication=NA,
+      description = "Validations of the SAA Nigeria Use Case MVP",
+      group = group,
+      license ="none",
+      carob_contributor = 'Eduardo Garcia Bendito;Cedric Ngakou',
+      data_citation = '...',
+      treatment_vars="variety;crop;longitude;latitude" ,
+      response_vars= "yield" ,
+      project = 'Excellence in Agronomy',
+      use_case = 'NG-Akilimo-SAA',
+      activity = 'validation',
+      data_type = "experiment", 
+      carob_date="2024-05-22",
+      note= "N_fertilizer,P_fertilizer and K_fertilizer rate are missing in the data"
+   )
+   
+   # Manually build path (this can be automated...)
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
+   
+   # Maize
+   fmc <- ff[basename(ff) == "maizeClean.csv"]
+   fmp <- ff[basename(ff) == "plotDimS.csv"]
+   fmm <- ff[basename(ff) == "grainMoistureM.csv"]
+   fms <- ff[basename(ff) == "scoreHigh.csv"]
+   fmf <- ff[basename(ff) == "NEfert.csv"]
+   
+   # Read relevant file(s)
+   rmc <- read.csv(fmc)
+   rmp <- read.csv(fmp)
+   rmm <- read.csv(fmm)
+   rms <- read.csv(fms)
+   rmf <- read.csv(fmf)
+   
+## Processing maize data
+   
+   # maizeClean
+   dh <- data.frame(
+      trial_id= rmc$HHID,
+      event= rmc$event,
+      adm1= rmc$stateEA,
+      location= rmc$lga,
+      year= rmc$Year,
+      country=rmc$country,
+      longitude=rmc$Longitude,
+      latitude= rmc$Latitude,
+      yield_SSR= rmc$maizeGrainFW_plot_SSR,
+      yield_BRR= rmc$maizeGrainFW_plot_BRR,
+      yield_ZCC= rmc$maizeGrainFW_plot_ZCC,
+      land_prep_method= rmc$tillageMethod1
+      
+   )
+   
+   # Event1: planting
+   # Event2: 
+   # Event3: 
+   # Event4:
+   # Event5: 
+   ## Selecting the harvest event
+   dh <- dh[dh$event == "event5M",]
+   
+##  plotDimS
+   
+   dh1 <- data.frame(
+      trial_id= rmp$HHID,
+      adm1=  rmp$state,
+      plot_area_BRR= rmp$plotSizeBRR,
+      plot_area_SSR= rmp$plotSizeSSR,
+      plot_area_ZCC= rmp$plotSizeZCC
+   )
+   
+   dmh <- merge(dh,dh1, by=c("trial_id","adm1"), all.x= TRUE) 
+   
+## grainMoistureM
+   
+   dh2 <- data.frame(
+      trial_id= rmm$HHID,
+      yield_moisture_BRR= rmm$moistureBRR,
+      yield_moisture_SSR= rmm$moistureSSR,
+      yield_moisture_ZCC= rmm$moistureZCC
+   )
+   
+   dmh <- merge(dmh,dh2, by=c("trial_id"), all.x= TRUE) 
+   
+## Maize fertilizer (NEfert)
+   
+   dh3 <- data.frame(
+      trial_id= rmf$HHID,
+      adm1= rmf$state,
+      elevation= rmf$Altitude,
+      planting_date= rmf$plantingDate,
+      OM_used= ifelse(grepl("yes",rmf$orgApply1)|grepl("yes",rmf$orgApply2),TRUE,FALSE),
+      fertilizer_price= as.character(rowSums(rmf[,c("costUrea","costNPK")])),
+      variety= rmf$variety,
+      row_spacing= substr(rmf$plantingDensity,1,4),
+      plant_spacing= substr(rmf$plantingDensity,8,11),
+      fertilizer_amount_BRR= rmf$NPKBRR + rmf$plotUreaSplit1BRR+ rmf$plotUreaSplit2BRR,
+      fert= rmf$plotNPKBRR_BE + rmf$plotUreaBRR_BE,
+      fertilizer_type_BRR= "NPK;urea"
+   )
+   
+   dh3$fertilizer_amount_BRR[is.na(dh3$fertilizer_amount_BRR)] <- dh3$fert[is.na(dh3$fertilizer_amount_BRR)]
+   dh3$adm1[grep("BE",dh3$adm1)] <- "benue"
+   dh3$adm1[grep("KD",dh3$adm1)] <- "kaduna"
+   dh3$adm1[grep("KA",dh3$adm1)] <- "kano"
+   dh3$fert <- NULL
+   dh3$fertilizer_type_SSR <- NA
+   dh3$fertilizer_type_ZCC <- "NPK"
+   dh3$fertilizer_amount_SSR <- NA ## Unknwon 
+   dh3$fertilizer_amount_ZCC <- 0
+   
+   dmh <- merge(dmh,dh3, by=c("trial_id","adm1"), all.x= TRUE)  
+   
+   var <- names(dmh)[grep("SSR|BRR|ZCC",names(dmh))] 
+   dm <- lapply(c("_BRR","_SSR","_ZCC"),\(i){
+      dd <- dmh[,var]
+      dmh[var] <- NULL
+      dd <- dd[,names(dd)[grep(i,names(dd))]]
+      names(dd) <- gsub(i,"", names(dd))
+      dd$treatment <- gsub("_","",i)
+      cbind(dmh,dd)
+   })
+   
+   dm <- do.call(carobiner::bindr, dm)
+   dm$yield[!is.na(dm$plot_area)] <- (dm$yield[!is.na(dm$plot_area)]/dm$plot_area[!is.na(dm$plot_area)])*10000
+   dm$crop <- "maize"
+   
+## Processing rice data 
+   
+   frc <- ff[basename(ff) == "riceClean.csv"]
+   frm <- ff[basename(ff) == "grainMoistureR.csv"]
+   frs <- ff[basename(ff) == "dRed.csv"]
+   frf <- ff[basename(ff) == "Ralfert.csv"]
+   
+   ### read()
+   rrc <- read.csv(frc) 
+   rrm <- read.csv(frm) 
+   rrs <- read.csv(frs) 
+   rrf <- read.csv(frf) 
+   
+## riceClean file 
+   
+   drh <- data.frame(
+      trial_id= rrc$HHID,
+      event= rrc$event,
+      adm1= rrc$stateEA,
+      location= rrc$lga,
+      year= rrc$Year,
+      country=rrc$country,
+      longitude=rrc$Longitude,
+      latitude= rrc$Latitude,
+      yield_SSR= rrc$riceGrainFW_plot_SSR,
+      yield_BRR= rrc$riceGrainFW_plot_BRR,
+      yield_ZCC= rrc$riceGrainFW_plot_ZCC,
+      land_prep_method= rrc$tillageMethod1
+      
+   )
+   
+## Selecting the harvest event
+   
+   drh <- drh[drh$event == "event6R",]
+   
+   ## Adding plot size 
+   drh <- merge(drh,dh1, by=c("trial_id","adm1"), all.x= TRUE)
+   
+## grainMoistureR
+   
+   drh1 <- data.frame(
+      trial_id= rrm$HHID,
+      yield_moisture_BRR= rrm$moistureBRR,
+      yield_moisture_SSR= rrm$moistureSSR,
+      yield_moisture_ZCC= rrm$moistureZCC
+   )
+   
+   drh <- merge(drh,drh1, by=c("trial_id"), all.x= TRUE) 
+   
+## fertilizer file for rice (Ralfert)
+   
+   drh2 <- data.frame(
+      trial_id= rrf$HHID,
+      adm1= rrf$state,
+      elevation= rrf$Altitude,
+      planting_date= rrf$plantingDate,
+      OM_used= ifelse(grepl("yes",rrf$orgApply1)|grepl("yes",rrf$orgApply2),TRUE,FALSE),
+      fertilizer_price= as.character(rowSums(rrf[,c("costUrea","costNPK")])),
+      variety= rrf$variety,
+      row_spacing= substr(rrf$plantingDensity,1,4),
+      plant_spacing= substr(rrf$plantingDensity,8,11),
+      fertilizer_amount_BRR= rrf$NPKBRR + rrf$plotUreaSplit1BRR,
+      #fert= rrf$plotNPKBRR_B + rrf$plotUreaBRR_BE*0.46,
+      fertilizer_type_BRR= "NPK;urea"
+   )
+   
+   drh2$adm1[grep("BE",drh2$adm1)] <- "benue"
+   drh2$adm1[grep("KD",drh2$adm1)] <- "kaduna"
+   drh2$adm1[grep("KA",drh2$adm1)] <- "kano"
+   drh2$fertilizer_type_SSR <- NA
+   drh2$fertilizer_type_ZCC <- "NPK"
+   drh2$fertilizer_amount_SSR <- NA ## Unknwon 
+   drh2$fertilizer_amount_ZCC <- 0
+   
+   drh <- merge(drh,drh2, by=c("trial_id","adm1"), all.x= TRUE) 
+   
+   var <- names(drh)[grep("SSR|BRR|ZCC",names(drh))] 
+   dr <- lapply(c("_BRR","_SSR","_ZCC"),\(i){
+      dd <- drh[,var]
+      drh[var] <- NULL
+      dd <- dd[,names(dd)[grep(i,names(dd))]]
+      names(dd) <- gsub(i,"", names(dd))
+      dd$treatment <- gsub("_","",i)
+      cbind(drh,dd)
+   })
+   
+   dr <- do.call(carobiner::bindr, dr)
+   dr$yield[!is.na(dr$plot_area)] <- (dr$yield[!is.na(dr$plot_area)]/dr$plot_area[!is.na(dr$plot_area)])*10000
+   dr$crop <- "rice"
+   
+## Combine Maize data and Rice data 
+   
+   d <- carobiner::bindr(dm,dr)
+   d$event <- d$year <- NULL
+### Fixing date
+   d$planting_date <- gsub(" |, ", "-", d$planting_date) 
+   d$planting_date <- as.character(as.Date(d$planting_date,"%b-%d-%Y"))
+   
+### Adding variables 
+   
+   d$country <- "Nigeria"
+   d$is_survey <- FALSE
+   d$on_farm <- TRUE
+   d$yield_part <- "grain"
+   d$geo_from_source <- TRUE
+   d$irrigated <- FALSE
+   
+   d$N_fertilizer <- d$P_fertilizer <- d$K_fertilizer <- as.numeric(NA)
+   
+## data type
+   
+   d$row_spacing <- as.numeric(gsub("othe",NA,d$row_spacing))*100 #cm
+   d$plant_spacing <- as.numeric(d$plant_spacing)*100 #cm
+   
+   carobiner::write_files(dset, d, path=path)
 }
