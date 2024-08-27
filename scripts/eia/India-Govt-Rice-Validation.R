@@ -24,16 +24,19 @@ carob_script <- function(path) {
     dataset_id = uri,
     authors = "Amit Srivastava",
     data_institute = "IRRI",
-    title = NA,
+    title = "Planting Date SA - Bihar Use Case Validations",
     description = "Validations of the Planting Date SA Use Case MVP",
     group = group,
     license = 'Some license here...',
     carob_contributor = 'IITA Biometric Unit',
     data_citation = '...',
-    project = 'Excellence in Agronomy - Planting Date SA validations',
+    project = 'Excellence in Agronomy',
+    use_case = "SA-RiceWheat-Bihar",
+    activity = "validation",
     data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
     carob_date="2024-04-25",
-    treatment_vars = "fertilizer_type"
+    treatment_vars = "N_fertilizer; P_fertilizer; K_fertilizer; OM_amount; planting_date; insecticide_used",
+    response_vars = "yield"
   )
   
   # Manually build path (this can be automated...)
@@ -77,6 +80,7 @@ carob_script <- function(path) {
     latitude=r$PlotGPS.Latitude,
     longitude=r$PlotGPS.Longitude,
     elevation=r$PlotGPS.Altitude,
+    geo_from_source = TRUE,
     # crop_cut=r$cropCutDone, # # EGB: Is it really necessary??
     treatment=ifelse(r$treatment == "T1", "MVP recommendation", "Local recommendation"),
     variety=r$VarName,
@@ -91,14 +95,14 @@ carob_script <- function(path) {
     land_prep_method=ifelse(r$LandPrep == "NoTillage", "no-tillage", "conventional"),
     transplanting_date=r$seedingSowingTransDate,
     seed_source=r$seedSource,
-    seed_amount=r$cropSeedAmt,
+    # EGB: 
+    # # Need to convert seed weight to plants...
+    # seed_density=r$cropSeedAmt,
     irrigated=ifelse(r$irrigate == "yes", TRUE, FALSE),
     # EGB
     # # Would be good to check and standardize this (?)
     irrigation_source=r$irrigSource,
-    # EGB
-    # # Would be good to check and standardize this (?)
-    # irrigation_stage=r$irrigGrthStage, # Removing for now ...
+    irrigation_stage=r$irrigGrthStage, # Removing for now ...
     irrigation_number = r$irrigTimes,
     # EGB
     # # Need to review this...
@@ -111,12 +115,11 @@ carob_script <- function(path) {
     OM_amount = r$FYMAmount * 1000, # Assuming ton/ha
     OM_type = ifelse(r$FYM == "yes", "farmyard manure", NA),
     drought_stress=r$drought,
-    # drought_stage=r$droughtGS, # not in carob
-    # crop_area=r$EiAcropAreaAcre, # Not in carob
+    drought_stage=r$droughtGS, # not in carob
     harvest_days=r$cropDurationDays,# assumed to be days to harvest
-    # harvestMethod=r$harvestMethod, # not in carob
-    insecticide_used=r$insecticides,
-    # pesticide_used=r$pesticides,
+    harvest_method=r$harvestMethod, # not in carob
+    insecticide_used=ifelse(r$insecticides == "no", FALSE, TRUE),
+    pesticide_used=r$pesticides,
     lodging=r$lodgingPercent,# not in carob
     threshing_method=r$threshing, # not in carob
     yield=r$tonPerHectare*1000 # assume to be yield. Convert from tons/ha to kg/ha
@@ -125,9 +128,21 @@ carob_script <- function(path) {
   # EGB: 
   # # Carob admits "fallow" as an alternative to "none" (https://github.com/reagro/terminag/blob/43c69063ec93ba1805f83dd51b76d6b9748bda75/values/values_crop.csv#L293)
   d$previous_crop[d$previous_crop=="fallow"] <- "none" # Fallow not a crop 
-  d$insecticide_used[d$insecticide_used=="no"] <- "none"
+
+  # EGB:
+  # # Fix fertilizer_type
+  d$fertilizer_type <- gsub("Urea", "urea", d$fertilizer_type)
+  d$fertilizer_type <- gsub("Gypsum", "gypsum", d$fertilizer_type)
+  d$fertilizer_type <- gsub("MoP", "KCl", d$fertilizer_type)
+  d$fertilizer_type <- gsub("Boron", "borax", d$fertilizer_type)
+  
+  # EGB:
+  # # Fix land_prep_method
+  d$land_prep_method <- gsub("no-tillage", "none", d$land_prep_method)
+  
   # Replace empty cells with NAs
   d[d==""] <- NA # Empty cells assumed to be missing
+  
   carobiner::write_files(dset, d, path=path)
 }
 

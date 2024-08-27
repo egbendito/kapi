@@ -12,7 +12,7 @@ carob_script <- function(path) {
 
 "
   
-  uri <- "USC006_validation"
+  uri <- "doi:Ethiopia-DigitalGreen-Validation"
   group <- "eia"
   
   dset <- data.frame(
@@ -20,7 +20,7 @@ carob_script <- function(path) {
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
     uri = uri,
     dataset_id = uri,
-    data_institutions = "Alliance Bioversity - CIAT",
+    data_institute = "ABC",
     authors = "Lulseged Desta & Wuletawu Abera",
     title = "Digital Green Ethiopia Use Case Validations 2022",
     description = "Data for the use case validaton of Site-Specific Recommendations (SSR) for Ethiopia 2022",
@@ -28,11 +28,15 @@ carob_script <- function(path) {
     license = 'Some license here...',
     carob_contributor = 'IITA Biometric Unit',
     data_citation = '...',
-    project = 'Excellence in Agronomy;Digital Green Ethiopia;Validation',
+    project = 'Excellence in Agronomy',
+    use_case = "ET-HighMix-NextGen",
+    activity = "validation",
+    treatment_vars = "N_fertilizer; P_fertilizer; S_fertilizer; rain",
+    response_vars = "yield; fwy_residue; dmy_total",
     data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
     carob_date="2024-04-25",
-    treatment_vars = "N_fertilizer;P_fertilizer;S_fertilizer"
-  )
+    modified_by = "Eduardo Garcia Bendito",
+    last_modified = "2024-08-27")
   
   # Manually build path (this can be automated...)
   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-DigitalGreen-Validation/", full.names = T))
@@ -58,17 +62,19 @@ carob_script <- function(path) {
   # Build initial DF ... Start from here
 	d <- data.frame(
 		country = "Ethiopia",
-		crop = "Wheat",
+		crop = "wheat",
 		yield_part = "grain",	
 		on_farm = TRUE,
-		is_survey = TRUE,
+		is_survey = FALSE,
+		irrigated = FALSE,
 		adm1=r$Region,
 		adm2=r$District,
 		trial_id = r$HHID, # Using HHID as trial_id
 		latitude =r$LAT,
 		longitude=r$LONG,
 		elevation=r$ALT,
-		date=r$Year,
+		geo_from_source = TRUE,
+		planting_date = as.character(r$Year),
 		treatment=r$TRT,
 		fertilizer_type = "urea;NPKS",
 		N_fertilizer=r$`N (kg/ha)`,
@@ -76,17 +82,14 @@ carob_script <- function(path) {
 		S_fertilizer=r$`S (kg/ha)`,
 		dmy_total=r$`BM (t/ha)`, #We assumed BM is dmy_total because the addition of GY & SW equals BM in the dataset
 		yield=r$`GY(t/ha)`,
-		residue_yield=r$`SW(t/ha)`, #The straw weight is assumed to be the residue of the yield
+		fwy_residue=r$`SW(t/ha)`, #The straw weight is assumed to be the residue of the yield
 		harvest_index=r$HI  #New variable (harvest_index) created
 	)
 
-	# Convert the date to character
-	d$date <- as.character(d$date)
-	
 	# Convert variables from t/ha to kg/ha
 	d$dmy_total <- d$dmy_total * 1000
 	d$yield <- d$yield * 1000
-	d$residue_yield <- d$residue_yield * 1000
+	d$fwy_residue <- d$fwy_residue * 1000
 	
 	
 	# EGB:

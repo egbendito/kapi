@@ -21,7 +21,7 @@ carob_script <- function(path) {
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = carobiner::simple_uri(uri),
       dataset_id = uri,
-      data_institutions = "CGIAR - ICRISAT",
+      data_institute = "ICRISAT",
       authors = "Gizaw Desta",
       title = "Fertilizer Ethiopia Use Case Validations 2022",
       description = "Data for the use case validaton of fertilizer landscape recommendations for Ethiopia 2021",
@@ -29,7 +29,11 @@ carob_script <- function(path) {
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
-      project = 'Excellence in Agronomy - Fertilizer Ethiopia Validation',
+      project = 'Excellence in Agronomy',
+      use_case = "ET-HighMix-Gvt ETH",
+      activity = "validation",
+      treatment_vars = "N_fertilizer; P_fertilizer; variety_type; planting_method; landscape_position; herbicide_used; insecticide_used",
+      response_vars = "yield; residue_yield",
       data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
       carob_date="2024-05-30"
    )
@@ -49,12 +53,14 @@ carob_script <- function(path) {
       yield_part = "grain",	
       on_farm = TRUE,
       is_survey = FALSE,
+      irrigated = FALSE,
       adm1=r$District,
       adm2=r$Kebele,
       trial_id = r$`Farmers code`, # Using HHID as trial_id
       latitude =r$Latitude,
       longitude=r$Longitude,
       elevation=r$Altitude,
+      geo_from_source = TRUE,
       planting_date = as.character(r$Year),
       crop = tolower(r$crop),
       variety = r$`Crop variety name`,
@@ -63,7 +69,8 @@ carob_script <- function(path) {
       fertilizer_type = "urea; NPK",
       N_fertilizer=r$`N_ kg/ha`,
       P_fertilizer=r$`P_kg/ha`,
-      seed_amount = r$`Seed rate (kg/ha)`,
+      # How to convert weight to plant?
+      # seed_density = r$`Seed rate (kg/ha)`,
       planting_method = tolower(r$`Planting method`),
       landscape_position = r$Landscape,
       pest_severity = r$`Pest and disease occurrance`, #Severity was assumed to be Low or Medium
@@ -79,7 +86,7 @@ carob_script <- function(path) {
       previous_crop = tolower(r$`Crop rotation in past 1 year`),
       plot_area = r$`Plot size (m2)`, # in m2
       yield = r$`Grain yield (kg/ha)`,
-      residue_yield = r$`Straw yield (kg/ha)`, #The straw weight is assumed to be the residue of the yield
+      fwy_residue = r$`Straw yield (kg/ha)`, #The straw weight is assumed to be the residue of the yield
       crop_price = r$`Price of grain per 100 kg (ETH Birr)` + r$`Price of straw per 100kg (ETH Birr)`, # Prices in Ethiopian Birr (ETB) per 100kg for grain and straw
       fertilizer_price = as.character(r$`Price of fertilizerz PER 100KG`),
       currency = "ETB"

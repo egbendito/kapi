@@ -21,7 +21,7 @@ carob_script <- function(path) {
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = carobiner::simple_uri(uri),
       dataset_id = uri,
-      data_institutions = "CGIAR - IRRI",
+      data_institute = "IRRI",
       authors = "Rica Flor",
       title = "DSRC Cambodia Use Case Validations 2022-2023",
       description = "Data for the use case validaton of DSRC recommendations for Cambodia 2022-2023 seasons",
@@ -29,7 +29,11 @@ carob_script <- function(path) {
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
-      project = 'Excellence in Agronomy - DSRC Cambodia Validation',
+      project = 'Excellence in Agronomy',
+      use_case = "SEA-DSRC-Cambodia",
+      activity = "validation",
+      treatment_vars = "treatment; season",
+      response_vars = "yield",
       data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
       carob_date="2024-07-31"
    )
@@ -50,10 +54,16 @@ carob_script <- function(path) {
      trial_id = rep(1:(nrow(r1)/2), each = 2),
      treatment = ifelse(r1$experiment == "demotrial", "Direct Seeding and Best Agronomic Practices", "Farmers Practices"),
      on_farm = TRUE,
+     is_survey = FALSE,
+     irrigated = FALSE,
      country = "Cambodia",
      adm1 = r1$province,
      adm2 = r1$district,
-     location = r1$commune, 
+     location = r1$commune,
+     longitude = NA,
+     latitude = NA,
+     geo_from_source = FALSE,
+     
      site = r1$village,
      crop = "rice",
      variety = r1$variety,
@@ -75,7 +85,9 @@ carob_script <- function(path) {
      P_fertilizer = ifelse(!is.na(r1$fert_basal_dap_kg), r1$fert_basal_dap_kg*0.21, 0) + 
        ifelse(!is.na(r1$fert_basal_tsp_kg), r1$fert_basal_tsp_kg*0.1923, 0),
      K_fertilizer = ifelse(!is.na(r1$fert_basal_potash_kg), r1$fert_basal_potash_kg*0.498, 0),
-     yield = r1$crop_cut_kgha)
+     yield_part = "seed",
+     yield = r1$crop_cut_kgha
+     )
    
    d2 <- data.frame(
      trial_id = r2$hhid,
@@ -112,6 +124,7 @@ carob_script <- function(path) {
        ifelse(r2$fert_basal_tsp_yn == "yes", r2$fert_basal_tsp_kg*0.1923, 0),
      K_fertilizer = ifelse(r2$fert_basal_potash_yn == "yes", r2$fert_basal_potash_kg*0.498, 0) +
        ifelse(r2$fert_basal_npk_yn == "yes", r2$fert_basal_npk_kg*0.04, 0), # Using standard NPK composition 18:8:4
+     yield_part = "seed",
      yield = r2$crop_cut_kgha)
    
    d <- carobiner::bindr(d1, d2)
@@ -120,6 +133,47 @@ carob_script <- function(path) {
    d$adm1[grep("battambang", d$adm1)] <- "Battambang"
    d$adm1[grep("veng", d$adm1)] <- "Prey Veng"
    d$adm1[grep("takeo", d$adm1)] <- "Takeo"
-
+   
+   d$longitude[d$location == "anlongrun"] <- 102.96
+   d$latitude[d$location == "anlongrun"] <- 13.158
+   d$longitude[d$location == "preykuy"] <- 104.915
+   d$latitude[d$location == "preykuy"] <- 12.70
+   d$longitude[d$location == "chroab"] <- 104.92
+   d$latitude[d$location == "chroab"] <- 12.601
+   d$longitude[d$location == "tboungkrapeu"] <- 105.612
+   d$latitude[d$location == "tboungkrapeu"] <- 12.721
+   d$longitude[d$location == "theay"] <- 105.38
+   d$latitude[d$location == "theay"] <- 11.365
+   d$longitude[d$location == "babaong"] <- 105.31
+   d$latitude[d$location == "babaong"] <- 11.392
+   d$longitude[d$location == "bankam"] <- 104.945
+   d$latitude[d$location == "bankam"] <- 11.129
+   d$longitude[d$location == "cheungkuon"] <- 104.819
+   d$latitude[d$location == "cheungkuon"] <- 11.128
+   d$longitude[d$location == "KompongPreang"] <- 103.338
+   d$latitude[d$location == "KompongPreang"] <- 12.963
+   d$longitude[d$location == "RangKeSey"] <- 103.246
+   d$latitude[d$location == "RangKeSey"] <- 12.968
+   d$longitude[d$location == "Preykandiang"] <- 105.34
+   d$latitude[d$location == "Preykandiang"] <- 11.419
+   d$longitude[d$location == "Commune"] <- 105.3
+   d$latitude[d$location == "Commune"] <- 11.321
+   d$longitude[d$site == "Svayteap"] <- 105.88
+   d$latitude[d$site == "Svayteap"] <- 11.092
+   d$longitude[d$adm1 == "Takeo"] <- 104.677
+   d$latitude[d$adm1 == "Takeo"] <- 10.949
+   d$longitude[d$site == "SLa"] <- 104.81
+   d$latitude[d$site == "SLa"] <- 11.164
+   d$longitude[d$location == "Osaray"] <- 104.55
+   d$latitude[d$location == "Osaray"] <- 10.912
+   d$longitude[d$site == "La'ak"] <- 104.603
+   d$latitude[d$site == "La'ak"] <- 11.336
+   d$longitude[d$site == "Tropang Pring"] <- 105.942
+   d$latitude[d$site == "Tropang Pring"] <- 12.077
+   d$longitude[grep("Sangke", d$adm2, ignore.case = T)] <- 103.23
+   d$latitude[grep("Sangke", d$adm2, ignore.case = T)] <- 13.08
+   d$longitude[grep("KonTie 1", d$adm2, ignore.case = T)] <- 102.88
+   d$latitude[grep("KonTie 1", d$adm2, ignore.case = T)] <- 12.951
+   
    carobiner::write_files(dset, d, path=path)
 }
