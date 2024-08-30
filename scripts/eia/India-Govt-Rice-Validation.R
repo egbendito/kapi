@@ -14,13 +14,13 @@ carob_script <- function(path) {
 
 "
   
-  uri <- "doi:SA-PlantingDate-Validation"
+  uri <- "SA-PlantingDate-Validation"
   group <- "eia"
   
   dset <- data.frame(
     # Need to fill-in metadata...
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-    uri = carobiner::simple_uri(uri),
+    uri = uri,
     dataset_id = uri,
     authors = "Amit Srivastava",
     data_institute = "IRRI",

@@ -13,14 +13,14 @@ carob_script <- function(path) {
 	SOME DESCRIPTION GOES HERE...
 
 "
-   uri <- "doi:Nigeria-ATAFI-Validations"
+   uri <- "Nigeria-ATAFI-Validation"
    group <- "eia"
    
    meta <- data.frame(
       # Need to fill-in metadata...
-      uri = carobiner::simple_uri(uri),
+      uri = uri,
       dataset_id = uri,
-      authors = "Mary Jane;John Do",
+      authors = "Ali Ibrahim; Saito Kazuki",
       data_institute = "AfricaRice", 
       title = NA,
       #description ="Nigeria-ATAFI-Validations",
@@ -52,6 +52,7 @@ carob_script <- function(path) {
       season= r$Season,
       latitude= r$Field.location.latitude,
       longitude= r$Field.location.longitude,
+       geo_from_source = TRUE,
       land_prep_method= r$landPreparation_clearing,
       #r$number_Tillage,
       #r$number_Harrow,

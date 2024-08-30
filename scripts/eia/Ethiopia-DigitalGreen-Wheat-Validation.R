@@ -12,7 +12,7 @@ carob_script <- function(path) {
 
 "
   
-  uri <- "doi:Ethiopia-DigitalGreen-Validation"
+  uri <- "Ethiopia-DigitalGreen-Validation"
   group <- "eia"
   
   dset <- data.frame(
@@ -21,7 +21,7 @@ carob_script <- function(path) {
     uri = uri,
     dataset_id = uri,
     data_institute = "ABC",
-    authors = "Lulseged Desta & Wuletawu Abera",
+    authors = "Lulseged Desta; Wuletawu Abera",
     title = "Digital Green Ethiopia Use Case Validations 2022",
     description = "Data for the use case validaton of Site-Specific Recommendations (SSR) for Ethiopia 2022",
     group = group,
