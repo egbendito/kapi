@@ -13,13 +13,13 @@ carob_script <- function(path) {
 
 "
    
-   uri <- "doi:Cambodia-DSRC-Validation"
+   uri <- "Cambodia-DSRC-Validation"
    group <- "eia"
    
    dset <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-      uri = carobiner::simple_uri(uri),
+      uri = uri,
       dataset_id = uri,
       data_institute = "IRRI",
       authors = "Rica Flor",
@@ -63,7 +63,6 @@ carob_script <- function(path) {
      longitude = NA,
      latitude = NA,
      geo_from_source = FALSE,
-     
      site = r1$village,
      crop = "rice",
      variety = r1$variety,
