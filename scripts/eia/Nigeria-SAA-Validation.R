@@ -11,11 +11,15 @@ carob_script <- function(path) {
   
   "
 	SOME DESCRIPTION GOES HERE...
-
 "
   
-  uri <- "Nigeria-SAA-Validation"
-  group <- "eia"
+  program <- "eia"
+  usecase <- "USC008"
+  activity <- "validation"
+  uri <- paste(program, usecase, activity, sep = "-")
+  
+  # uri <- "Nigeria-SAA-Validation"
+  # group <- "eia"
   
   dset <- data.frame(
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),

@@ -14,8 +14,13 @@ carob_script <- function(path) {
 
 "
   
-  uri <- "SA-PlantingDate-Validation"
-  group <- "eia"
+  program <- "eia"
+  usecase <- "USC011"
+  activity <- "validation"
+  uri <- paste(program, usecase, activity, sep = "-")
+  
+  # uri <- "eia-USC007"
+  # group <- program
   
   dset <- data.frame(
     # Need to fill-in metadata...
@@ -146,4 +151,4 @@ carob_script <- function(path) {
   carobiner::write_files(dset, d, path=path)
 }
 
-# carob_script(path)
+carob_script(path)
