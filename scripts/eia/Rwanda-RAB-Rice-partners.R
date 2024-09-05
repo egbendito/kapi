@@ -15,8 +15,9 @@ SOME DESCRIPTION GOES HERE...
 "
    
    #### Identifiers
+   
    uri <- "doi:Rwanda-RAB-Rice-partners"
-   group <- "fertilizer"
+   group <- "eia"
    
    #### Download data 
    ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-Rice-partners/", full.names = T))
@@ -27,15 +28,20 @@ SOME DESCRIPTION GOES HERE...
       uri = carobiner::simple_uri(uri),
       dataset_id = uri,
       authors = 'Some names here...',
+      publication=NA,
       title = 'Rwanda Rice Data',
       description = 'Some description here...',
-      data_institutions = "CGIAR - CIP",
+      data_institute = "CGIAR - CIP",
       group = group,
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
-      project = 'Excellence in Agronomy - Rwanda RAB',
+      project = 'Excellence in Agronomy',
       data_type = "compilation", # or, e.g. "on-farm experiment", "survey", "compilation"
+      use_case ="CA-HighMix-SNS/RAB",
+      activity = "other",
+      response_vars= "yield;dmy_residue" ,
+      treatment_vars= "N_fertilizer;P_fertilizer;K_fertilizer; longitude;latitude",
       carob_date="2024-04-25"
    )
    
@@ -134,6 +140,15 @@ SOME DESCRIPTION GOES HERE...
    )
    
    d <- carobiner::bindr(d1,d2,d3,d4)
+   d$adm1 <- "Southern province"
+   d$adm2 <- "Gisagara District"
+   d$adm3 <- "Gikonko"
+   
+   d$geo_from_source <- TRUE
+   d$on_farm <- NA 
+   d$is_survey <- FALSE
+   d$irrigated <- NA
+   
    ## Fix whitespace in treatment
    d$treatment <- gsub("", NA, d$treatment)
    
@@ -145,6 +160,4 @@ SOME DESCRIPTION GOES HERE...
    carobiner::write_files(path, dset, d)
 }
 
-## now test your function in a _clean_ R environment (no packages loaded, no other objects available)
-# path <- _____
-# carob_script(path)
+
