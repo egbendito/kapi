@@ -11,10 +11,15 @@ carob_script <- function(path) {
    
    "
 	SOME DESCRIPTION GOES HERE...
-
 "
-   uri <- "Nigeria-ATAFI-Validation"
-   group <- "eia"
+  
+  program <- "eia"
+  usecase <- "USC001"
+  activity <- "validation"
+  uri <- paste(program, usecase, activity, sep = "-")
+  
+  # uri <- "Nigeria-ATAFI-Validation"
+  # group <- "eia"
    
    meta <- data.frame(
       # Need to fill-in metadata...

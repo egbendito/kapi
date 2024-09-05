@@ -13,8 +13,13 @@ carob_script <- function(path) {
 
 "
    
-   uri <- "Ethiopia-Fertilizer-Validation"
-   group <- "eia"
+  program <- "eia"
+  usecase <- "USC007"
+  activity <- "validation"
+  uri <- paste(program, usecase, activity, sep = "-")
+  
+  # uri <- "Ethiopia-Fertilizer-Validation"
+  # group <- "eia"
    
    dset <- data.frame(
       # Need to fill-in metadata...
