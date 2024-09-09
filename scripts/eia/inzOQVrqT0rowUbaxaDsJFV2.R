@@ -20,8 +20,9 @@ carob_script <- function(path) {
    meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-      uri = carobiner::simple_uri(uri),
+      # uri = carobiner::simple_uri(uri),
       dataset_id = uri,
+      uri = uri,
       authors =NA,
       data_institute =NA,
       title = NA,
@@ -36,7 +37,6 @@ carob_script <- function(path) {
       response_vars= "yield",
       treatment_vars = "intercrops;fertilizer_type;N_fertilizer;P_fertilizer;K_fertilizer",
       carob_date="2024-07-24"
-      
       )
    
    # Manually build path (this can be automated...)
