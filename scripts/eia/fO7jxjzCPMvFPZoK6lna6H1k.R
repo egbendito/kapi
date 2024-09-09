@@ -14,11 +14,9 @@ carob_script <- function(path) {
 
 "
    
-   # uri <- "doi:Chinyanja-Solidaridad-Soy-AddOn"
-   uri <- "USC016_addon"
-   group <- "eia"
+    uri <- "fO7jxjzCPMvFPZoK6lna6H1k"
    
-   dset <- data.frame(
+   meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       # uri = carobiner::simple_uri(uri),
@@ -27,17 +25,20 @@ carob_script <- function(path) {
       authors =NA,
       data_institute =NA,
       title = NA,
-      group = group,
+      group ="",
       license = 'Some license here...',
+      project = 'Excellence in Agronomy',
+      usecase_name="CH-CerLeg-Solidaridad",
+      usecase_code="USC016",
+      activity= "addon",
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy;Chinyanja-Solidaridad-Soy;AddOn',
-      data_type = "survey", # or, e.g. "on-farm experiment", "survey", "compilation"
+      data_type = "survey", 
       carob_date="2024-06-24"
-      # treatment_vars = "longitude;latitude;variety;N_fertilizer;P_fertilizer;K_fertilizer"
-   )
+      
+      )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-AddOn/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-AddOn/", full.names = T))
    
    # Retrieve relevant file
    f1 <- ff[grep("farmer_segmentation_July",basename(ff))]
@@ -270,9 +271,9 @@ carob_script <- function(path) {
    d$irrigation_dates <- gsub("dec", "2022-12", d$irrigation_dates)
    
    
-   message("yield is given in kg,bags and tonnes instead of kg/ha")
+   message("yield is given in kg, bags and tonnes instead of kg/ha")
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
 }
 
 # carob_script(path)

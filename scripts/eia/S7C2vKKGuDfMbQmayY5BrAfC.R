@@ -16,34 +16,33 @@ SOME DESCRIPTION GOES HERE...
    
    #### Identifiers
    
-   uri <- "doi:Rwanda-RAB-Rice-partners"
-   group <- "eia"
-   
-   #### Download data 
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-Rice-partners/", full.names = T))
-   # ff <- list.files(paste0(getwd(), '/data/raw/', group, '/', uri), full.names = TRUE)
-   
+   uri <- "S7C2vKKGuDfMbQmayY5BrAfC"
+  
    ##### dataset level metadata 
-   dset <- data.frame(
-      uri = carobiner::simple_uri(uri),
+   meta <- data.frame(
+      uri = uri,
       dataset_id = uri,
       authors = 'Some names here...',
       publication=NA,
       title = 'Rwanda Rice Data',
       description = 'Some description here...',
       data_institute = "CGIAR - CIP",
-      group = group,
+      group = "",
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
       project = 'Excellence in Agronomy',
-      data_type = "compilation", # or, e.g. "on-farm experiment", "survey", "compilation"
-      use_case ="CA-HighMix-SNS/RAB",
+      data_type = "compilation", 
+      usecase_code ="USC002",
+      usecase_name ="CA-HighMix-SNS/RAB",
       activity = "other",
       response_vars= "yield;dmy_residue" ,
       treatment_vars= "N_fertilizer;P_fertilizer;K_fertilizer; longitude;latitude",
       carob_date="2024-04-25"
    )
+   
+   # Manually build path (this can be automated...) 
+   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-Rice-partners/", full.names = T))
    
    ##### PROCESS data records
    
@@ -57,6 +56,7 @@ SOME DESCRIPTION GOES HERE...
    r3 <- read.csv(f3)
    f4 <- ff[basename(ff) == "SAnDMan_Rice_fieldData.RDS"]
    r4 <- readRDS(f4)
+   
    
    ## process file(s)
    
@@ -157,7 +157,7 @@ SOME DESCRIPTION GOES HERE...
    d$dataset_id <- uri
    
    # all scripts must end like this
-   carobiner::write_files(path, dset, d)
+   carobiner::write_files(path, meta, d)
 }
 
 

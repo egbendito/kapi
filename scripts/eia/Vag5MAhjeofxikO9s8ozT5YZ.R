@@ -14,15 +14,12 @@ carob_script <- function(path) {
 
 "
   
-  program <- "eia"
-  usecase <- "USC011"
-  activity <- "validation"
-  uri <- paste(program, usecase, activity, sep = "-")
   
-  # uri <- "eia-USC007"
-  # group <- program
+  uri <- "Vag5MAhjeofxikO9s8ozT5YZ"
   
-  dset <- data.frame(
+ 
+  
+  meta <- data.frame(
     # Need to fill-in metadata...
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
     uri = uri,
@@ -31,21 +28,22 @@ carob_script <- function(path) {
     data_institute = "IRRI",
     title = "Planting Date SA - Bihar Use Case Validations",
     description = "Validations of the Planting Date SA Use Case MVP",
-    group = group,
+    group = "",
     license = 'Some license here...',
     carob_contributor = 'IITA Biometric Unit',
     data_citation = '...',
     project = 'Excellence in Agronomy',
-    use_case = "SA-RiceWheat-Bihar",
+    usecase_code= "USC011",
+    usecase_name = "SA-RiceWheat-Bihar",
     activity = "validation",
-    data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+    data_type = "on-farm experiment", 
     carob_date="2024-04-25",
-    treatment_vars = "N_fertilizer; P_fertilizer; K_fertilizer; OM_amount; planting_date; insecticide_used",
+    treatment_vars = "N_fertilizer; P_fertilizer; K_fertilizer; insecticide_used",
     response_vars = "yield"
   )
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/SA-PlantingDate-Validation/", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/SA-PlantingDate-Validation/", full.names = T))
   
   # Retrieve relevant file
   f <- ff[basename(ff) == "EiA_Rabi_Wheat_Production_survey_data_2022-23.csv"]
@@ -148,7 +146,7 @@ carob_script <- function(path) {
   # Replace empty cells with NAs
   d[d==""] <- NA # Empty cells assumed to be missing
   
-  carobiner::write_files(dset, d, path=path)
+  carobiner::write_files(meta, d, path=path)
 }
 
 # carob_script(path)

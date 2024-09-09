@@ -13,40 +13,37 @@ carob_script <- function(path) {
 	SOME DESCRIPTION GOES HERE...
 "
   
-  program <- "eia"
-  usecase <- "USC008"
-  activity <- "validation"
-  uri <- paste(program, usecase, activity, sep = "-")
   
-  # uri <- "Nigeria-SAA-Validation"
-  # group <- "eia"
+  uri <- "ZhlNGvfIy9DNUdaDXvQkTBMC"
   
-  dset <- data.frame(
+  
+  meta <- data.frame(
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
     # uri = carobiner::simple_uri(uri),
     uri = uri,
     dataset_id = uri,
     authors = "Christine Kreye",
-    data_institute = "IITA", #International Institute of Tropical Agriculture",
+    data_institute = "IITA", 
     title = NA,
     publication=NA,
     description = "Validations of the SAA Nigeria Use Case MVP",
-    group = group,
+    group = "",
     license ="none",
     carob_contributor = 'Eduardo Garcia Bendito;Cedric Ngakou',
     data_citation = '...',
     treatment_vars="variety;crop;longitude;latitude" ,
     response_vars= "yield" ,
     project = 'Excellence in Agronomy',
-    use_case = 'NG-Akilimo-SAA',
+    usecase_code= "USC008",
+    usecase_name = 'NG-Akilimo-SAA',
     activity = 'validation',
     data_type = "experiment", 
     carob_date="2024-05-22",
-    note= "N_fertilizer,P_fertilizer and K_fertilizer rate are missing in the data"
+    notes= "N_fertilizer,P_fertilizer and K_fertilizer rate are missing in the data"
   )
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
   
   # Maize
   fmc <- ff[basename(ff) == "maizeClean.csv"]
@@ -313,6 +310,6 @@ carob_script <- function(path) {
   d$row_spacing <- as.numeric(d$row_spacing)
   d$plant_spacing <- as.numeric(d$plant_spacing)
   
-  carobiner::write_files(dset, d, path=path)
+  carobiner::write_files(meta, d, path=path)
   
 }
