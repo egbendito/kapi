@@ -18,8 +18,9 @@ carob_script <- function(path) {
    
    meta <- data.frame(
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-      uri = carobiner::simple_uri(uri),
+      # uri = carobiner::simple_uri(uri),
       dataset_id = uri,
+      uri = uri,
       authors ="Mary Jane;John Doe",
       publication= NA,
       data_institute =NA,
