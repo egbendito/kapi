@@ -13,13 +13,7 @@ carob_script <- function(path) {
 	SOME DESCRIPTION GOES HERE...
 "
   
-  program <- "eia"
-  usecase <- "USC001"
-  activity <- "validation"
-  uri <- paste(program, usecase, activity, sep = "-")
-  
-  # uri <- "Nigeria-ATAFI-Validation"
-  # group <- "eia"
+   uri <- "NT7VLWDrOQEkarWkfn2bDSuf"
    
    meta <- data.frame(
       # Need to fill-in metadata...
@@ -30,12 +24,13 @@ carob_script <- function(path) {
       title = NA,
       #description ="Nigeria-ATAFI-Validations",
       license = NA,
-      group = group,
+      group ="",
       publication=NA,
-      use_case ="WA-Rice-ATAFI/MOVE",
+      usecase_code= "USC001",
+      usecase_name ="WA-Rice-ATAFI/MOVE",
       activity = 'validation',
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy; Nigeria-ATAFI-Validations',
+      project = 'Excellence in Agronomy',
       data_type = "on-farm experiment", 
       carob_date="2024-08-08",
       treatment_vars = "N_fertilizer;P_fertilizer;K_fertilizer",
@@ -43,12 +38,12 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-ATAFI-Validations/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group ="", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-ATAFI-Validations/", full.names = T))
    
    # Retrieve relevant file
    f <- ff[basename(ff) == "VAT_data_ATAFI use case.xlsx"]
    # Read relevant file
-   r <- carobiner::read.excel.hdr(f,skip=0,na=c("n/a",NA))
+   r <- carobiner::read.excel.hdr(f, skip=0, na=c("n/a", NA))
    
    d <- data.frame(
       country= r$Country.name,
