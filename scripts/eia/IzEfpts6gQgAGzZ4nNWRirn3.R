@@ -12,15 +12,11 @@ carob_script <- function(path) {
 
 "
   
-  program <- "eia"
-  usecase <- "USC006"
-  activity <- "validation"
-  uri <- paste(program, usecase, activity, sep = "-")
   
-  # uri <- "Ethiopia-DigitalGreen-Validation"
-  # group <- "eia"
+  uri <- "IzEfpts6gQgAGzZ4nNWRirn3"
   
-  dset <- data.frame(
+ 
+  meta <- data.frame(
     # Need to fill-in metadata...
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
     uri = uri,
@@ -29,22 +25,23 @@ carob_script <- function(path) {
     authors = "Lulseged Desta; Wuletawu Abera",
     title = "Digital Green Ethiopia Use Case Validations 2022",
     description = "Data for the use case validaton of Site-Specific Recommendations (SSR) for Ethiopia 2022",
-    group = group,
+    group = "",
     license = 'Some license here...',
     carob_contributor = 'IITA Biometric Unit',
     data_citation = '...',
     project = 'Excellence in Agronomy',
-    use_case = "ET-HighMix-NextGen",
+    usecase_code= "USC006",
+    usecase_name = "ET-HighMix-NextGen",
     activity = "validation",
     treatment_vars = "N_fertilizer; P_fertilizer; S_fertilizer; rain",
     response_vars = "yield; fwy_residue; dmy_total",
-    data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+    data_type = "on-farm experiment", 
     carob_date="2024-04-25",
     modified_by = "Eduardo Garcia Bendito",
     last_modified = "2024-08-27")
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-DigitalGreen-Validation/", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-DigitalGreen-Validation/", full.names = T))
   
   # Retrieve relevant file
   f <- ff[basename(ff) == "1 DG_CIAT_wheat_usecase_KPI_calculation_Sept_2023.xlsx"]
@@ -119,7 +116,7 @@ carob_script <- function(path) {
 	# # Add ancillary information on price, rain
 	d <- merge(d, p, by = "adm2")
 	
-	carobiner::write_files(dset, d, path=path)
+	carobiner::write_files(meta, d, path=path)
 }
 
 

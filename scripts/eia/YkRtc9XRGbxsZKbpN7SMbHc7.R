@@ -5,7 +5,7 @@
 # 2. Data reads are still unstable and user needs to have access
 # 3. License is missing (CC-BY)?
 # 4. Many valuable variables that need to be integrated still...
-# 5. ...
+
 
 carob_script <- function(path) {
    
@@ -14,30 +14,34 @@ carob_script <- function(path) {
 
 "
    
-   uri <- "doi:Rwanda-RAB-AddOn"
-   group <- "eia"
+   uri <- "YkRtc9XRGbxsZKbpN7SMbHc7"
    
-   dset <- data.frame(
+   
+   meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-      uri = carobiner::simple_uri(uri),
+      uri = uri,
       dataset_id = uri,
       authors =NA,
       publication=NA,
       data_institute =NA,
       title = NA,
-      group = group,
+      group ="",
+      project = 'Excellence in Agronomy',
       license = 'Some license here...',
+      usecase_code ="USC002",
+      usecase_name ="CA-HighMix-SNS/RAB",
+      activity = "addon",
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy;Rwanda RAB; AddOn',
-      data_type = "survey", # or, e.g. "on-farm experiment", "survey", "compilation"
-      carob_date="2024-06-18",
+      data_type = "survey", 
       treatment_vars = "none",
-      response_vars= "none"
+      response_vars= "none",
+      carob_date="2024-06-18"
+      
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-AddOn/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-AddOn/", full.names = T))
    
    f <- ff[basename(ff) == "EiA_AddOn_Full_Survey_RAB_Rwanda_2023_11_08.xlsx"]
    # Read file
@@ -184,7 +188,7 @@ carob_script <- function(path) {
    message("yield is given in kg,bags and tonnes instead of kg/ha")
    
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
 }
 
 #carob_script(path)

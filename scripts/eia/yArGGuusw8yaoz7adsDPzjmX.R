@@ -13,15 +13,10 @@ carob_script <- function(path) {
 
 "
    
-  program <- "eia"
-  usecase <- "USC012"
-  activity <- "validation"
-  uri <- paste(program, usecase, activity, sep = "-")
+  uri <- "yArGGuusw8yaoz7adsDPzjmX"
   
-  # uri <- "Cambodia-DSRC-Validation"
-  # group <- "eia"
-   
-   dset <- data.frame(
+  
+   meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = uri,
@@ -30,21 +25,22 @@ carob_script <- function(path) {
       authors = "Rica Flor",
       title = "DSRC Cambodia Use Case Validations 2022-2023",
       description = "Data for the use case validaton of DSRC recommendations for Cambodia 2022-2023 seasons",
-      group = group,
+      group = "",
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
       project = 'Excellence in Agronomy',
-      use_case = "SEA-DSRC-Cambodia",
+      usecase_code= "USC012",
+      usecase_name = "SEA-DSRC-Cambodia",
       activity = "validation",
       treatment_vars = "treatment; season",
       response_vars = "yield",
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+      data_type = "on-farm experiment", 
       carob_date="2024-07-31"
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Cambodia-DSRC-Validation/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Cambodia-DSRC-Validation/", full.names = T))
    
    # Retrieve relevant file
    f1 <- ff[basename(ff) == "EiA_farmerdiary_2022-23DS_rawdata_anonymized.O.xlsx"]
@@ -179,5 +175,5 @@ carob_script <- function(path) {
    d$longitude[grep("KonTie 1", d$adm2, ignore.case = T)] <- 102.88
    d$latitude[grep("KonTie 1", d$adm2, ignore.case = T)] <- 12.951
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
 }

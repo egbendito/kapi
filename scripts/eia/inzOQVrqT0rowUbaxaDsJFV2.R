@@ -5,7 +5,6 @@
 # 2. Data reads are still unstable and user needs to have access
 # 3. License is missing (CC-BY)?
 # 4. Many valuable variables that need to be integrated still...
-
 # 5. Intercrops arrangement and cost benefit balance(cbb) are not yet included in carob as standard variable
 # 6. Some rows have the harvest date within 45 days after planting wchih is not correct for soybean or maize
 
@@ -15,10 +14,10 @@ carob_script <- function(path) {
 	SOME DESCRIPTION GOES HERE...
 
 "
-   uri <- "doi:Ghana-Soybean-NOT"
-   group <- "eia"
+   uri <- "inzOQVrqT0rowUbaxaDsJFV2"
    
-   dset <- data.frame(
+   
+   meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = carobiner::simple_uri(uri),
@@ -26,18 +25,22 @@ carob_script <- function(path) {
       authors =NA,
       data_institute =NA,
       title = NA,
-      group = group,
+      group = "",
       license = 'Some license here...',
+      project = 'Excellence in Agronomy ',
+      usecase_code= "USC010",
+      usecase_name= "GH-CerLeg-Esoko",
+      activity="experiment",
       carob_contributor = 'Cedric Ngakou',
-      project = 'Excellence in Agronomy - Ghana-Soybean-NOT',
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
-      carob_date="2024-07-24",
+      data_type = "on-farm experiment",
       response_vars= "yield",
-      treatment_vars = "intercrops;fertilizer_type;N_fertilizer;P_fertilizer;K_fertilizer"
-   )
+      treatment_vars = "intercrops;fertilizer_type;N_fertilizer;P_fertilizer;K_fertilizer",
+      carob_date="2024-07-24"
+      
+      )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ghana-Soybean-NOT/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ghana-Soybean-NOT/", full.names = T))
    
    f <-  ff[basename(ff)=="Ghana Soy Esoko_Data_Fertilizer Type Recommendation Trial 2023.xlsx"]
    f1 <- ff[basename(ff)=="Ghana Soy Esoko_Data_Nutrient Omission Trial 2023.xlsx"]
@@ -216,7 +219,7 @@ carob_script <- function(path) {
    ## Data type
    d$maturity_days <- as.numeric(d$maturity_days)
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
    
 }
 

@@ -13,15 +13,11 @@ carob_script <- function(path) {
 
 "
    
-  program <- "eia"
-  usecase <- "USC007"
-  activity <- "validation"
-  uri <- paste(program, usecase, activity, sep = "-")
   
-  # uri <- "Ethiopia-Fertilizer-Validation"
-  # group <- "eia"
+  uri <- "1DYRN4xC3vGwCpZTgCyCRNay"
+  
    
-   dset <- data.frame(
+ meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = uri,
@@ -30,21 +26,22 @@ carob_script <- function(path) {
       authors = "Gizaw Desta",
       title = "Fertilizer Ethiopia Use Case Validations 2022",
       description = "Data for the use case validaton of fertilizer landscape recommendations for Ethiopia 2021",
-      group = group,
+      group = "",
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
       project = 'Excellence in Agronomy',
-      use_case = "ET-HighMix-Gvt ETH",
+      usecase_code= "USC007",
+      usecase_name = "ET-HighMix-Gvt ETH",
       activity = "validation",
       treatment_vars = "N_fertilizer; P_fertilizer; variety_type; planting_method; landscape_position; herbicide_used; insecticide_used",
       response_vars = "yield; residue_yield",
-      data_type = "on-farm experiment", # or, e.g. "on-farm experiment", "survey", "compilation"
+      data_type = "on-farm experiment", 
       carob_date="2024-05-30"
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-Fertilizer-Validation/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-Fertilizer-Validation/", full.names = T))
    
    # Retrieve relevant file
    f <- ff[basename(ff) == "ICRISAT_EIA_FertEth_ValidationData.xlsx"]
@@ -118,5 +115,5 @@ carob_script <- function(path) {
    d$latitude[grep("Goshebado", d$adm2)] <- 9.742694
    
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
 }
