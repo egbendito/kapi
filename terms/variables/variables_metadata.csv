@@ -1,4 +1,4 @@
 name,type,unit,required,vocabulary,multiple_allowed,valid_min,valid_max,NAok,description,notes,obo
-usecase_code,character,,yes,myeia_code,no,,,yes,Excellence in Agronomy use case names,,
-usecase_name,character,,yes,eia_usecases,no,,,yes,Excellence in Agronomy use case names,,
+usecase_code,character,,yes,eia_usecasescodes,no,,,yes,Excellence in Agronomy use case names,,
+usecase_name,character,,yes,eia_usecasesnames,no,,,yes,Excellence in Agronomy use case names,,
 activity,character,,yes,eia_activities,no,,,yes,"Excellence in agronomy steps (e.g. validation, piloting, scaling, add-on, etc)",,
