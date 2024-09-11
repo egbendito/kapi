@@ -14,7 +14,7 @@ carob_script <- function(path) {
   
   
   uri <- "IzEfpts6gQgAGzZ4nNWRirn3"
-  
+  group <- "eia"
  
   meta <- data.frame(
     # Need to fill-in metadata...
@@ -25,7 +25,7 @@ carob_script <- function(path) {
     authors = "Lulseged Desta; Wuletawu Abera",
     title = "Digital Green Ethiopia Use Case Validations 2022",
     description = "Data for the use case validaton of Site-Specific Recommendations (SSR) for Ethiopia 2022",
-    group = "",
+    group = group,
     license = 'Some license here...',
     carob_contributor = 'IITA Biometric Unit',
     data_citation = '...',
@@ -41,7 +41,7 @@ carob_script <- function(path) {
     last_modified = "2024-08-27")
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-DigitalGreen-Validation/", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-DigitalGreen-Validation/", full.names = T))
   
   # Retrieve relevant file
   f <- ff[basename(ff) == "1 DG_CIAT_wheat_usecase_KPI_calculation_Sept_2023.xlsx"]

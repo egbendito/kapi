@@ -15,7 +15,7 @@ carob_script <- function(path) {
 
 "
    uri <- "inzOQVrqT0rowUbaxaDsJFV2"
-   
+   group <- "eia"
    
    meta <- data.frame(
       # Need to fill-in metadata...
@@ -26,7 +26,7 @@ carob_script <- function(path) {
       authors =NA,
       data_institute =NA,
       title = NA,
-      group = "",
+      group = group,
       license = 'Some license here...',
       project = 'Excellence in Agronomy ',
       usecase_code= "USC010",
@@ -40,7 +40,7 @@ carob_script <- function(path) {
       )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ghana-Soybean-NOT/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ghana-Soybean-NOT/", full.names = T))
    
    f <-  ff[basename(ff)=="Ghana Soy Esoko_Data_Fertilizer Type Recommendation Trial 2023.xlsx"]
    f1 <- ff[basename(ff)=="Ghana Soy Esoko_Data_Nutrient Omission Trial 2023.xlsx"]

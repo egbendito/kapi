@@ -15,6 +15,7 @@ carob_script <- function(path) {
 "
    
     uri <- "fO7jxjzCPMvFPZoK6lna6H1k"
+    group <- "eia"
    
    meta <- data.frame(
       # Need to fill-in metadata...
@@ -25,7 +26,7 @@ carob_script <- function(path) {
       authors =NA,
       data_institute =NA,
       title = NA,
-      group ="",
+      group = group,
       license = 'Some license here...',
       project = 'Excellence in Agronomy',
       usecase_name="CH-CerLeg-Solidaridad",
@@ -38,7 +39,7 @@ carob_script <- function(path) {
       )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-AddOn/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-AddOn/", full.names = T))
    
    # Retrieve relevant file
    f1 <- ff[grep("farmer_segmentation_July",basename(ff))]

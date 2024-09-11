@@ -15,7 +15,7 @@ carob_script <- function(path) {
 "
    
    uri <- "YkRtc9XRGbxsZKbpN7SMbHc7"
-   
+   group <- "eia"
    
    meta <- data.frame(
       # Need to fill-in metadata...
@@ -26,7 +26,7 @@ carob_script <- function(path) {
       publication=NA,
       data_institute =NA,
       title = NA,
-      group ="",
+      group = group,
       project = 'Excellence in Agronomy',
       license = 'Some license here...',
       usecase_code ="USC002",
@@ -41,7 +41,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-AddOn/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-AddOn/", full.names = T))
    
    f <- ff[basename(ff) == "EiA_AddOn_Full_Survey_RAB_Rwanda_2023_11_08.xlsx"]
    # Read file

@@ -14,6 +14,7 @@ carob_script <- function(path) {
 "
   
    uri <- "NT7VLWDrOQEkarWkfn2bDSuf"
+   group <- "eia"
    
    meta <- data.frame(
       # Need to fill-in metadata...
@@ -24,7 +25,7 @@ carob_script <- function(path) {
       title = NA,
       #description ="Nigeria-ATAFI-Validations",
       license = NA,
-      group ="",
+      group = group,
       publication=NA,
       usecase_code= "USC001",
       usecase_name ="WA-Rice-ATAFI/MOVE",
@@ -38,7 +39,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group ="", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-ATAFI-Validations/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-ATAFI-Validations/", full.names = T))
    
    # Retrieve relevant file
    f <- ff[basename(ff) == "VAT_data_ATAFI use case.xlsx"]
