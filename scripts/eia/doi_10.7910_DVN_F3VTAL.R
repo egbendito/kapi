@@ -21,12 +21,6 @@ carob_script <- function(path) {
   dset <- data.frame(
     # Need to fill-in metadata...
     carobiner::read_metadata(uri, path, group, major=1, minor=0),
-    # uri = carobiner::simple_uri(uri),
-    # dataset_id = uri,
-    # authors = "Christine Kreye",
-    # data_institutions = "International Institute of Tropical Agriculture (IITA)",
-    # title = NA,
-    # description = "Validations of the SAA Nigeria Use Case MVP",
     # publication = NA,
     # data_institution = 'ABC; IITA',
     # group = group,
@@ -36,8 +30,9 @@ carob_script <- function(path) {
     carob_contributor = 'Eduardo Garcia Bendito',
     # data_citation = '...',
     project = 'Excellence in Agronomy',
-    use_case = 'GH-CerLeg-GAIP',
-    activity = 'validation',
+    usecase_code= "USC009",
+    usecase_name = 'GH-CerLeg-GAIP',
+    activity = 'other',
     data_type = "survey",
     carob_date="2024-05-22"
   )
