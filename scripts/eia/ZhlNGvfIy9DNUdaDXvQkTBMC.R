@@ -219,11 +219,12 @@ carob_script <- function(path) {
   drh <- drh[drh$event == "event6R",]
   
   ## Adding plot size 
-  drh1 <- rrc[rrc$event == "event1R", c("HHID", "plotL1_BRR", "plotW1_BRR", "plotL1_SSR", "plotW1_SSR", "plotL1_ZCC", "plotW1_ZCC")]
+  drh1 <- rrc[rrc$event == "event1R", c("HHID", "plotL1_BRR", "plotW1_BRR", "plotL1_SSR", "plotW1_SSR", "plotL1_ZCC", "plotW1_ZCC", "riceSystem")]
   drh1$plot_area_BRR <- (drh1$plotL1_BRR * drh1$plotW1_BRR)/10000
   drh1$plot_area_SSR <- (drh1$plotL1_SSR * drh1$plotW1_SSR)/10000
   drh1$plot_area_ZCC <- (drh1$plotL1_ZCC * drh1$plotW1_ZCC)/10000
-  drh1 <- drh1[,c(1,8,9,10)]
+  drh1$farming_system <- ifelse(drh1$riceSystem == "rainfedLowland", "rainfed lowland", ifelse(drh1$riceSystem == "irrigated", "irrigated", ifelse(drh1$riceSystem == "", NA, NA)))
+  drh1 <- drh1[,c(1,9:12)]
   colnames(drh1)[1] <- "trial_id"
   drh <- merge(drh,drh1, by=c("trial_id"), all.x= TRUE)
   # drh$plot_area_BRR <- ifelse(is.na(drh$plot_area_BRR), 0.0100, drh$plot_area_BRR)
@@ -306,7 +307,7 @@ carob_script <- function(path) {
   d$is_survey <- FALSE
   d$on_farm <- TRUE
   d$yield_part <- "grain"
-  d$irrigated <- FALSE
+  d$irrigated <- ifelse(d$farming_system == "irrigated", TRUE, FALSE)
   d$row_spacing <- as.numeric(d$row_spacing)
   d$plant_spacing <- as.numeric(d$plant_spacing)
   
