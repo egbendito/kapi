@@ -15,7 +15,7 @@ carob_script <- function(path) {
   
   
   uri <- "ZhlNGvfIy9DNUdaDXvQkTBMC"
-  
+  group <- "eia"
   
   meta <- data.frame(
     # carobiner::read_metadata(uri, path, group, major=2, minor=0),
@@ -27,7 +27,7 @@ carob_script <- function(path) {
     title = NA,
     publication=NA,
     description = "Validations of the SAA Nigeria Use Case MVP",
-    group = "",
+    group = group,
     license ="none",
     carob_contributor = 'Eduardo Garcia Bendito;Cedric Ngakou',
     data_citation = '...',
@@ -43,7 +43,7 @@ carob_script <- function(path) {
   )
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
   
   # Maize
   fmc <- ff[basename(ff) == "maizeClean.csv"]

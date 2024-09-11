@@ -14,7 +14,7 @@ carob_script <- function(path) {
 "
    
   uri <- "yArGGuusw8yaoz7adsDPzjmX"
-  
+  group <- "eia"
   
    meta <- data.frame(
       # Need to fill-in metadata...
@@ -25,7 +25,7 @@ carob_script <- function(path) {
       authors = "Rica Flor",
       title = "DSRC Cambodia Use Case Validations 2022-2023",
       description = "Data for the use case validaton of DSRC recommendations for Cambodia 2022-2023 seasons",
-      group = "",
+      group = group,
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
@@ -40,7 +40,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Cambodia-DSRC-Validation/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Cambodia-DSRC-Validation/", full.names = T))
    
    # Retrieve relevant file
    f1 <- ff[basename(ff) == "EiA_farmerdiary_2022-23DS_rawdata_anonymized.O.xlsx"]

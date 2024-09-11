@@ -17,6 +17,7 @@ SOME DESCRIPTION GOES HERE...
    #### Identifiers
    
    uri <- "S7C2vKKGuDfMbQmayY5BrAfC"
+   group <- "eia"
   
    ##### dataset level metadata 
    meta <- data.frame(
@@ -27,7 +28,7 @@ SOME DESCRIPTION GOES HERE...
       title = 'Rwanda Rice Data',
       description = 'Some description here...',
       data_institute = "CGIAR - CIP",
-      group = "",
+      group = group,
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
@@ -42,7 +43,7 @@ SOME DESCRIPTION GOES HERE...
    )
    
    # Manually build path (this can be automated...) 
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-Rice-partners/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Rwanda-RAB-Rice-partners/", full.names = T))
    
    ##### PROCESS data records
    

@@ -15,7 +15,7 @@ carob_script <- function(path) {
    
   
   uri <- "1DYRN4xC3vGwCpZTgCyCRNay"
-  
+  group <- "eia"
    
  meta <- data.frame(
       # Need to fill-in metadata...
@@ -26,7 +26,7 @@ carob_script <- function(path) {
       authors = "Gizaw Desta",
       title = "Fertilizer Ethiopia Use Case Validations 2022",
       description = "Data for the use case validaton of fertilizer landscape recommendations for Ethiopia 2021",
-      group = "",
+      group = group,
       license = 'Some license here...',
       carob_contributor = 'Eduardo Garcia Bendito',
       data_citation = '...',
@@ -41,7 +41,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-Fertilizer-Validation/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-Fertilizer-Validation/", full.names = T))
    
    # Retrieve relevant file
    f <- ff[basename(ff) == "ICRISAT_EIA_FertEth_ValidationData.xlsx"]

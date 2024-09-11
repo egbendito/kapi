@@ -15,6 +15,7 @@ carob_script <- function(path) {
 "
    
    uri <- "rMygxYbTj3FL8XryV2K96XjF"
+   group <- "eia"
    
    meta <- data.frame(
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
@@ -25,7 +26,7 @@ carob_script <- function(path) {
       publication= NA,
       data_institute =NA,
       title = NA,
-      group = "",
+      group = group,
       license = NA,
       project = 'Excellence in Agronomy',
       usecase_code ="USC016",
@@ -39,7 +40,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = "", files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-NOT/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-NOT/", full.names = T))
    
    
    f <- ff[basename(ff)=="Crop_mixes_Msekera_26.06.23 updated 28 Aug  2023.xlsx"]
