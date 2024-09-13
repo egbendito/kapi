@@ -13,11 +13,11 @@ carob_script <- function(path) {
 
 "
    
-  
-  uri <- "1DYRN4xC3vGwCpZTgCyCRNay"
-  group <- "eia"
    
- meta <- data.frame(
+   uri <- "1DYRN4xC3vGwCpZTgCyCRNay"
+   group <- "eia"
+   
+   meta <- data.frame(
       # Need to fill-in metadata...
       # carobiner::read_metadata(uri, path, group, major=2, minor=0),
       uri = uri,
@@ -71,6 +71,7 @@ carob_script <- function(path) {
       fertilizer_type = "urea; NPK",
       N_fertilizer=r$`N_ kg/ha`,
       P_fertilizer=r$`P_kg/ha`,
+      K_fertilizer= 0, ##  
       # How to convert weight to plant?
       # seed_density = r$`Seed rate (kg/ha)`,
       planting_method = tolower(r$`Planting method`),
@@ -90,7 +91,7 @@ carob_script <- function(path) {
       yield = r$`Grain yield (kg/ha)`,
       fwy_residue = r$`Straw yield (kg/ha)`, #The straw weight is assumed to be the residue of the yield
       crop_price = r$`Price of grain per 100 kg (ETH Birr)` + r$`Price of straw per 100kg (ETH Birr)`, # Prices in Ethiopian Birr (ETB) per 100kg for grain and straw
-      fertilizer_price = as.character(r$`Price of fertilizerz PER 100KG`),
+      fertilizer_price = as.character(r$`Price of fertilizerz PER 100KG`), 
       currency = "ETB"
    )
    
@@ -114,6 +115,8 @@ carob_script <- function(path) {
    d$longitude[grep("Goshebado", d$adm2)] <- 39.44261
    d$latitude[grep("Goshebado", d$adm2)] <- 9.742694
    
+   ## Fix crop price and fertilizer price 
+   d$crop_price <- d$crop_price/100 ## ETB/Kg
    
    carobiner::write_files(meta, d, path=path)
 }
