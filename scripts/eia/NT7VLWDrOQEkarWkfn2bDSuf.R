@@ -73,7 +73,8 @@ carob_script <- function(path) {
       P_fertilizer= r$P.applied.kg.ha,
       K_fertilizer= r$Kapplied.kg.ha,
       fertilizer_price= as.character(r$Total.fertilizer.cost.USD.ha),
-      yield_moisture= r$yield.at.14pct.moisture.content.kg.ha,
+      yield= r$yield.at.14pct.moisture.content.kg.ha,
+      yield_moisture= 14,
       NUE_fertilizer= r$NUE.kg.kg, # N Use Efficiency (kg/kg N ) = grain yield/N_fertilizer application rate
       PUE_fertilizer= r$PUE.kg.kg, # P Use Efficiency ( kg/kg P) 
       KUE_fertilizer= r$KUE.kg.kg, # K Use Efficiency (kg/kg K)
