@@ -133,6 +133,7 @@ carob_script <- function(path) {
 
   # Format plot information
   d.hh.plots <- merge(d.hh.plots, d.hh.plots.info, by.x = c("_parent_index", "index_plot"), by.y = c("_parent_index", "plot_numberid"), all.x = T)
+  d.hh.plots$country <- "Ethiopia"
   d.hh.plots$longitude <- d.hh.plots$plot_longitude
   d.hh.plots$latitude <- d.hh.plots$plot_latitude
   d.hh.plots$geo_uncertainty <- d.hh.plots$`_geopoint_plot_precision`
@@ -201,7 +202,7 @@ carob_script <- function(path) {
   d.hh.plots$yield_marketable <- d.hh.plots$primary_weight_sold/(d.hh.plots$plot_area/10000)
   
   d.hh.plots <- d.hh.plots[,c("_parent_index", "index_plot",
-                              "longitude", "latitude", "elevation", "geo_uncertainty", "geo_from_source", "plot_area", 
+                              "country", "longitude", "latitude", "elevation", "geo_uncertainty", "geo_from_source", "plot_area", 
                               "crop", "variety", "intercrops", "previous_crop", "previous_crop_burnt","previous_crop_residue_management",
                               "seed_source", "seed_density", "seed_cost", "planting_method", "row_spacing", "irrigated",
                               "harvesting_method", "yield_part", "yield", "yield_marketable",
@@ -209,9 +210,15 @@ carob_script <- function(path) {
   
   # Merge things
   d.hh.members <- merge(d.hh, d.hh.members, by.x = "_index", by.y = "_parent_index", all.y = T)
-  d.hh.plots <- merge(d.hh, d.hh.plots, by.x = "_index", by.y = "_parent_index", all.y = T)
-  d.hh.plots <- merge(d.hh.plots, d.plots.til.methods, by.x = "_index", by.y = "_parent_index", all.x = T)
-  d.hh.plots <- merge(d.hh.plots, d.plots.fert.org, by.x = "_index", by.y = "_parent_index", all.x = T)
+  d <- merge(d.hh, d.hh.plots, by.x = "_index", by.y = "_parent_index", all.y = T)
+  d <- merge(d, d.plots.til.methods, by.x = "_index", by.y = "_parent_index", all.x = T)
+  d <- merge(d, d.plots.fert.org, by.x = "_index", by.y = "_parent_index", all.x = T)
+  
+  d <- d[,c(2, 4:ncol(d))]
+  
+  d <- carobiner::change_names(d,
+                               from = c("barcodehousehold"),
+                               to = c("trial_id"))
   
   carobiner::write_files(meta, d, path=path)
   
