@@ -17,17 +17,15 @@ carob_script <- function(path) {
    uri <- "R8EQa4bVPWLKYBuG7m9Bjsh0"
    group <- "eia"
    
-   dset <- data.frame(
-      # Need to fill-in metadata...
-      # carobiner::read_metadata(uri, path, group, major=2, minor=0),
-      uri = carobiner::simple_uri(uri),
+   meta <- data.frame(
+      uri = uri,
       dataset_id = uri,
       publication= NA,
       authors ="Mary Jane; John Doe",
       data_institute ="IITA",
       title = NA,
       group = group,
-      license = 'Some license here...',
+      license = 'none',
       carob_contributor = 'Cedric Ngakou',
       usecase_code= "USC009",
       usecase_name = 'GH-CerLeg-GAIP',
@@ -227,7 +225,7 @@ carob_script <- function(path) {
    d$irrigation_dates <- gsub("dec", "2023-12", d$irrigation_dates)
    
    
-   carobiner::write_files(dset, d, path=path)
+   carobiner::write_files(meta, d, path=path)
 }
 
 #carob_script(path)
