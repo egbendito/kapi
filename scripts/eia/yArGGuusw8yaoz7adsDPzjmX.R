@@ -40,7 +40,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Cambodia-DSRC-Validation/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("~/carob-eia/data/raw/eia/Cambodia-DSRC-Validation/", full.names = T))
    
    # Retrieve relevant file
    f1 <- ff[basename(ff) == "EiA_farmerdiary_2022-23DS_rawdata_anonymized.O.xlsx"]
