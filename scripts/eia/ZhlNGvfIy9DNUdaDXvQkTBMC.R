@@ -43,7 +43,7 @@ carob_script <- function(path) {
   )
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("~/carob-eia/data/raw/eia/Nigeria-SAA-Validation", full.names = T))
   
   # Maize
   fmc <- ff[basename(ff) == "maizeClean.csv"]
