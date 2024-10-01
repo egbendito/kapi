@@ -21,7 +21,7 @@ carob_script <- function(path) {
     uri = uri,
     dataset_id = uri,
     authors = "Lulseged Desta; Wuletawu Abera",
-    data_institute = "Alliance Bioversity and CIAT", 
+    data_institute = "ABC", 
     title = NA,
     publication=NA,
     description = "Yield Gap Decomposition Add-On Survey",
@@ -63,6 +63,9 @@ carob_script <- function(path) {
   
   # Read plots inorganic fertilizer data
   d.plots.fert.inorg <- as.data.frame(readxl::read_excel(f, sheet = "inorganic_inputs_repeat"))[c(-1),]
+  
+  # Read plots weeding data
+  d.plots.weeding <- as.data.frame(readxl::read_excel(f, sheet = "weeding_info"))[c(-1),]
   
   # Format household data
   d.hh$barcodehousehold <- ifelse(!is.na(d.hh$barcodehousehold), d.hh$barcodehousehold, d.hh$barcodehousehold_1)
@@ -125,7 +128,28 @@ carob_script <- function(path) {
   # # # TBD
   
   # Format weeding data
-  # # # TBD
+  d.plots.weeding$weeding_technique <- gsub("Manual Tillage", "manual", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Tillage Manual", "tillage", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Chemical Manual", "chemical", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Manual Chemical", "manual", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Chemical Mechanical", "chemical", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Chemical Manual other", "chemical", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Chemical other", "chemical", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Chemical Water_pressure_spraying", "chemical", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Manual Chemical Water_pressure_spraying", "manual", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Manual Grazing", "manual", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Manual Mowing", "manual", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- gsub("Mowing Manual", "mowing", d.plots.weeding$weeding_technique)
+  d.plots.weeding$weeding_technique <- tolower(d.plots.weeding$weeding_technique)
+  d.plots.wed.technique <- reshape(d.plots.weeding[,c("_parent_table_name","_parent_index","weeding_id","weeding_technique", "herbicide_name", "herbicide_cost")],
+                                   idvar = c("_parent_index", "_parent_table_name"),
+                                   timevar = "weeding_id", direction = "wide")
+  d.plots.wed.technique$weeding_method <- c(gsub("; NA", "", matrix(apply(d.plots.wed.technique[grep("weeding_technique", colnames(d.plots.wed.technique))], 1, paste0, collapse='; '), ncol=1)))
+  d.plots.wed.technique$herbicide_product <- c(gsub("; NA", "", matrix(apply(d.plots.wed.technique[grep("herbicide_name", colnames(d.plots.wed.technique))], 1, paste0, collapse='; '), ncol=1)))
+  d.plots.wed.technique$herbicide_cost <- c(gsub("; NA", "", matrix(apply(d.plots.wed.technique[grep("herbicide_cost", colnames(d.plots.wed.technique))], 1, paste0, collapse='; '), ncol=1)))
+  d.plots.wed.technique <- d.plots.wed.technique[, c("_parent_index", "weeding_method", "herbicide_product", "herbicide_cost")]
+  # EGB:
+  # # Need to include labor costs
   
   # Format pest and diseases data
   # # # TBD
@@ -135,10 +159,13 @@ carob_script <- function(path) {
 
   # Format plot information
   d.hh.plots <- merge(d.hh.plots, d.hh.plots.info, by.x = c("_parent_index", "index_plot"), by.y = c("_parent_index", "plot_numberid"), all.x = T)
-  d.hh.plots$longitude <- d.hh.plots$plot_longitude
-  d.hh.plots$latitude <- d.hh.plots$plot_latitude
-  d.hh.plots$geo_uncertainty <- d.hh.plots$`_geopoint_plot_precision`
-  d.hh.plots$elevation <- d.hh.plots$`_geopoint_plot_altitude`
+  d.hh.plots$on_farm <- FALSE
+  d.hh.plots$is_survey <- TRUE
+  d.hh.plots$country <- "Ethiopia"
+  d.hh.plots$longitude <- as.numeric(d.hh.plots$plot_longitude)
+  d.hh.plots$latitude <- as.numeric(d.hh.plots$plot_latitude)
+  d.hh.plots$geo_uncertainty <- as.numeric(d.hh.plots$`_geopoint_plot_precision`)
+  d.hh.plots$elevation <- as.numeric(d.hh.plots$`_geopoint_plot_altitude`)
   d.hh.plots$geo_from_source <- TRUE
   d.hh.plots$plot_area <- ifelse(d.hh.plots$unitland == "hectare", as.numeric(d.hh.plots$plot_size)*10000,
                                ifelse(d.hh.plots$unitland == "sqm", as.numeric(d.hh.plots$plot_size), NA))
@@ -147,6 +174,8 @@ carob_script <- function(path) {
   d.hh.plots$crop[d.hh.plots$crop == "fababean"] <- "faba bean"
   d.hh.plots$crop[d.hh.plots$crop == "mungbean"] <- "mung bean"
   d.hh.plots$crop[d.hh.plots$crop == "potatoIrish"] <- "potato"
+  d.hh.plots$crop[d.hh.plots$crop %in% c("fieldpea", "grasspea")] <- "pea"
+  d.hh.plots$crop[d.hh.plots$crop == "oat"] <- "oats"
   d.hh.plots$crop[grep("other", d.hh.plots$crop)] <- NA
   d.hh.plots$previous_crop[d.hh.plots$previous_crop == "fababean"] <- "faba bean"
   d.hh.plots$previous_crop[d.hh.plots$previous_crop == "mungbean"] <- "mung bean"
@@ -157,6 +186,9 @@ carob_script <- function(path) {
   d.hh.plots$previous_crop[d.hh.plots$previous_crop %in% c("fieldpea", "peas")] <- "pea"
   d.hh.plots$previous_crop[d.hh.plots$previous_crop == "potatoSweet"] <- "sweetpotato"
   d.hh.plots$previous_crop[d.hh.plots$previous_crop == "oat"] <- "oats"
+  d.hh.plots$previous_crop[d.hh.plots$previous_crop == "bananas"] <- "banana"
+  d.hh.plots$previous_crop[d.hh.plots$previous_crop == "carrots"] <- "carrot"
+  d.hh.plots$previous_crop <- ifelse(d.hh.plots$previous_crop %in% c("other1", "other2", "other3", "no_answer"), NA, d.hh.plots$previous_crop)
   d.hh.plots$crop[grep(paste0(c("other", "no_answer"), collapse = "|"), d.hh.plots$crop)] <- NA
   d.hh.plots$intercrops <- d.hh.plots$inter_crop
   d.hh.plots$intercrops[d.hh.plots$intercrops == "fababean"] <- "faba bean"
@@ -202,8 +234,8 @@ carob_script <- function(path) {
   d.hh.plots$primary_weight_sold[grep("tonne", d.hh.plots$primary_harvest_unit)] <- 1000*as.numeric(d.hh.plots$selling_primary_amount[grep("tonne", d.hh.plots$primary_harvest_unit)])
   d.hh.plots$yield_marketable <- d.hh.plots$primary_weight_sold/(d.hh.plots$plot_area/10000)
   
-  d.hh.plots <- d.hh.plots[,c("_parent_index", "index_plot",
-                              "longitude", "latitude", "elevation", "geo_uncertainty", "geo_from_source", "plot_area", 
+  d.hh.plots <- d.hh.plots[,c("_parent_index", "index_plot", "on_farm", "is_survey",
+                              "country", "longitude", "latitude", "elevation", "geo_uncertainty", "geo_from_source", "plot_area", 
                               "crop", "variety", "intercrops", "previous_crop", "previous_crop_burnt","previous_crop_residue_management",
                               "seed_source", "seed_density", "seed_cost", "planting_method", "row_spacing", "irrigated",
                               "harvesting_method", "yield_part", "yield", "yield_marketable",
@@ -211,9 +243,16 @@ carob_script <- function(path) {
   
   # Merge things
   d.hh.members <- merge(d.hh, d.hh.members, by.x = "_index", by.y = "_parent_index", all.y = T)
-  d.hh.plots <- merge(d.hh, d.hh.plots, by.x = "_index", by.y = "_parent_index", all.y = T)
-  d.hh.plots <- merge(d.hh.plots, d.plots.til.methods, by.x = "_index", by.y = "_parent_index", all.x = T)
-  d.hh.plots <- merge(d.hh.plots, d.plots.fert.org, by.x = "_index", by.y = "_parent_index", all.x = T)
+  d <- merge(d.hh, d.hh.plots, by.x = "_index", by.y = "_parent_index", all.y = T)
+  d <- merge(d, d.plots.til.methods, by.x = "_index", by.y = "_parent_index", all.x = T)
+  d <- merge(d, d.plots.fert.org, by.x = "_index", by.y = "_parent_index", all.x = T)
+  d <- merge(d, d.plots.wed.technique, by.x = "_index", by.y = "_parent_index", all.x = T)
+  
+  d <- d[,c(2, 4:ncol(d))]
+  
+  d <- carobiner::change_names(d,
+                               from = c("barcodehousehold"),
+                               to = c("trial_id"))
   
   carobiner::write_files(meta, d, path=path)
   
