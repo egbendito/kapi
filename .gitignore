@@ -17,6 +17,8 @@ run.R
 .Renviron
 *.Rproj
 .Rprofile
-other/
 .ipynb*
+other/api/data/
+other/api/keys.csv
+
 
