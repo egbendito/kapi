@@ -40,7 +40,7 @@ carob_script <- function(path) {
    )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-NOT/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("~/carob-eia/data/raw/eia/Chinyanja-Solidaridad-Soy-NOT/", full.names = T))
    
    
    f <- ff[basename(ff)=="Crop_mixes_Msekera_26.06.23 updated 28 Aug  2023.xlsx"]

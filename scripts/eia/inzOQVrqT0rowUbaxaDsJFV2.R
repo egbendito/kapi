@@ -40,7 +40,7 @@ carob_script <- function(path) {
       )
    
    # Manually build path (this can be automated...)
-   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ghana-Soybean-NOT/", full.names = T))
+   ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("~/carob-eia/data/raw/eia/Ghana-Soybean-NOT/", full.names = T))
    
    f <-  ff[basename(ff)=="Ghana Soy Esoko_Data_Fertilizer Type Recommendation Trial 2023.xlsx"]
    f1 <- ff[basename(ff)=="Ghana Soy Esoko_Data_Nutrient Omission Trial 2023.xlsx"]

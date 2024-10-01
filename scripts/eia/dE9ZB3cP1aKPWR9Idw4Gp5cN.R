@@ -39,7 +39,7 @@ carob_script <- function(path) {
   )
   
   # Manually build path (this can be automated...)
-  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("/home/jovyan/carob-eia/data/raw/eia/Ethiopia-Fertilizer-Addon/YieldGap/", full.names = T))
+  ff <- carobiner::get_data(uri = uri, path = path, group = group, files = list.files("~/carob-eia/data/raw/eia/Ethiopia-Fertilizer-Addon/YieldGap/", full.names = T))
   
   # Retrieve relevant file
   f <- ff[grep("yield_gap_only_fertilizer_ethiopia_06_10_2023.xlsx", basename(ff))]
