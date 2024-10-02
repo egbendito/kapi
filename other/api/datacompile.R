@@ -41,8 +41,8 @@ system("git pull")
 #system("git push origin main")
 
 #Compile
-carobiner::make_carob("/home/jovyan/zKav/CarobK/eia-carob")
-
+#carobiner::make_carob("/home/jovyan/zKav/CarobK/eia-carob")
+carobiner::make_carob("./")
 
 
 #
