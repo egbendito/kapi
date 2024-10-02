@@ -1,7 +1,7 @@
 ### DATE: August 2024 ############ 
 ### AUTHOR:
 
-
+Sys.setenv(HOME="/home/azureuser")
 #
 #Install and load required packages
 install_and_load <- function(packages, repos = "http://cran.us.r-project.org") {
