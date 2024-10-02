@@ -34,10 +34,10 @@ carobiner::update_terms(local_terms="/home/jovyan/zKav/CarobK/eia-carob/terms")
 system("git pull")
 
 #sync your forked repository(reginakavive/eia-carob) with the upstream (EiA2030/eia-carob)
-# system("git remote add upstream https://github.com/EiA2030/eia-carob.git")
-# system("git fetch upstream")
-# system("git checkout main")
-# system("git merge upstream/main")
+system("git remote add upstream https://github.com/EiA2030/eia-carob.git")
+system("git fetch upstream")
+system("git checkout main")
+system("git merge upstream/main")
 #system("git push origin main")
 
 #Compile
