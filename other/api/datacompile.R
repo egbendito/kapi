@@ -28,7 +28,7 @@ install_and_load(required_packages)
 # install carobiner
 remotes::install_github("reagro/carobiner", force = TRUE, ask = FALSE, upgrade ="always")
 
-carobiner::update_terms(local_terms="/home/jovyan/zKav/CarobK/eia-carob/terms")
+carobiner::update_terms(local_terms="./terms")
 
 #update any changes from repo
 system("git pull")
