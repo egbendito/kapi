@@ -43,68 +43,6 @@ carob_script <- function(path) {
   # Read relevant file
   r <- readRDS(f)
   
-  # # Event 1
-  # dE1 <- r[r$intro.event == "event1",]
-  # # Event 7
-  # dE7 <- r[r$intro.event == "event7",]
-  # 
-  # dE1 <- data.frame(
-  #   country= "Rwanda",
-  #   longitude = as.numeric(dE1$intro._geopoint_household_longitude),
-  #   latitude = as.numeric(dE1$intro._geopoint_household_latitude),
-  #   elevation = as.numeric(dE1$intro._geopoint_household_altitude),
-  #   geo_uncertainty = as.numeric(dE1$intro._geopoint_household_precision),
-  #   geo_from_source = TRUE,
-  #   trial_id = dE1$intro.barcodehousehold,
-  #   treatment = NA,
-  #   irrigated = ifelse(dE1$LandPreparation.landPreparation.irrigation_technique == "rainfed", FALSE, TRUE),
-  #   on_farm = TRUE,
-  #   is_survey = FALSE,
-  #   crop = ifelse(tolower(dE1$crop) == "potatoirish", "potato", ifelse(tolower(dE1$crop) == "beansbush", "common bean", tolower(dE1$crop))),
-  #   variety = ifelse(dE1$planting.plantingDetails.variety == "n/a", NA, dE1$planting.plantingDetails.variety),
-  #   previous_crop = ifelse(dE1$LandPreparation.landPreparation.previous_crop == "n/a", NA,
-  #                          ifelse(dE1$LandPreparation.landPreparation.previous_crop %in% c("beansClimbing", "beansBush"), "common bean",
-  #                                 ifelse(dE1$LandPreparation.landPreparation.previous_crop == "peas", "pea",
-  #                                        ifelse(dE1$LandPreparation.landPreparation.previous_crop == "carrots", "carrot",
-  #                                               ifelse(dE1$LandPreparation.landPreparation.previous_crop == "potatoIrish", "potato",
-  #                                                      ifelse(dE1$LandPreparation.landPreparation.previous_crop == "passionfruit", "passion fruit",
-  #                                                             ifelse(dE1$LandPreparation.landPreparation.previous_crop == "potatoSweet", "sweetpotato", NA))))))),
-  #   residue_prevcrop_used = ifelse(dE1$LandPreparation.landPreparation.residue_management.removal %in% c("n/a", "TRUE"), FALSE, TRUE),
-  #   previous_crop_residue_management = gsub("; ", "", paste0(ifelse(dE1$LandPreparation.landPreparation.residue_management.incorporation == TRUE, "incorporation", ""),
-  #                                                            ifelse(dE1$LandPreparation.landPreparation.residue_management.spreading == TRUE, "spreading", ""),
-  #                                                            ifelse(dE1$LandPreparation.landPreparation.residue_management.left_for_grazing == TRUE, "grazing", ""),
-  #                                                            sep = "; ")),
-  #   previous_crop_burnt = as.logical(ifelse(dE1$LandPreparation.landPreparation.residue_management.burning == "n/a", NA, dE1$LandPreparation.landPreparation.residue_management.burning)),
-  #   previous_crop_residue_perc = as.numeric(ifelse(dE1$LandPreparation.landPreparation.residue_remaining == "0", 0,
-  #                                                  ifelse(dE1$LandPreparation.landPreparation.residue_remaining == "lessThan50", 50,
-  #                                                         ifelse(dE1$LandPreparation.landPreparation.residue_remaining == "moreThan50", 75,
-  #                                                                ifelse(dE1$LandPreparation.landPreparation.residue_remaining == "all100", 100, NA))))),
-  #   fertilizer_used_previous_season = ifelse(dE1$LandPreparation.landPreparation.inorganic_fertilizer_previous_season == "yes", TRUE,
-  #                                            ifelse(dE1$LandPreparation.landPreparation.inorganic_fertilizer_previous_season == "no", FALSE, NA)),
-  #   OM_used_previous_season = ifelse(dE1$LandPreparation.landPreparation.organic_fertilizer_previous_season == "yes", TRUE,
-  #                                    ifelse(dE1$LandPreparation.landPreparation.organic_fertilizer_previous_season == "no", FALSE, NA)),
-  #   # EGB:
-  #   # # Not sure if "manual" == "hoeing"
-  #   land_prep_method = gsub("manual", "hoeing",gsub("n/a", "", gsub("; n/a", "", gsub("n/a; ", "", paste(dE1$LandPreparation.landPrepationDetails.tillage_technique_1,
-  #                                                                                                         dE1$LandPreparation.landPrepationDetails.tillage_technique_2,
-  #                                                                                                         dE1$LandPreparation.landPrepationDetails.tillage_technique_3, sep = "; "))))),
-  #   planting_date = as.character(as.Date(dE1$planting.plantingDetails.planting_date, "%m/%d/%Y")),
-  #   # EGB:
-  #   # # Need to convert to plants/ha (How to convert seed/ha to plant/ha or kg/ha to plant/ha?)
-  #   seed_density = ifelse(dE1$planting.plantingDetails.plant_density_unit == "plants/m2",
-  #                         as.numeric(dE1$planting.plantingDetails.plant_density)*10000, NA),
-  #   planting_method = ifelse(dE1$planting.plantingDetails.planting_technique %in% c("line_sowing", "line_planting"), "line sowing",
-  #                            ifelse(dE1$planting.plantingDetails.planting_technique == "n/a", NA, dE1$planting.plantingDetails.planting_technique)),
-  #   row_spacing = as.numeric(dE1$planting.densityDetails.row_spacing)*100,
-  #   plant_spacing = as.numeric(dE1$planting.densityDetails.plant_spacing)*100,
-  #   OM_used = ifelse(dE1$fertilizer_org_used == "yes", TRUE,
-  #                    ifelse(dE1$fertilizer_org_used == "no", FALSE, NA)),
-  #   OM_type = gsub("; ", "", paste(ifelse(dE1$organicInputsDetails.fertilizer_org_name.compost == "TRUE", "compost", ""),
-  #                                  ifelse(dE1$organicInputsDetails.fertilizer_org_name.manure == "TRUE", "farmyard manure", ""),
-  #                                  ifelse(dE1$organicInputsDetails.fertilizer_org_name.crop_residues == "TRUE", "leaf litter", ""), sep = "; ")),
-  #   OM_date = as.character(as.Date(dE1$organicInputsDetails.fertilizer_org_date, "%m/%d/%Y"))
-  # )
-  
   d <- data.frame(
     country= "Rwanda",
     longitude = as.numeric(r$intro._geopoint_household_longitude),
