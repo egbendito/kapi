@@ -38,7 +38,7 @@ function(res, req, eia_code, kpi, key) {
     res$status <- 404
     list("404 Not Found. No validation data")
   } else {
-    uri <- md[md$usecase_code == eia_code, "uri"]
+    uri <- md[md$usecase_code == eia_code & md$activity == "validation", "uri", drop = FALSE]
     uu <- read.csv(paste0("./data/clean/eia/", uri, ".csv"))
     if(kpi == "yield"){
       desired_cols <- c("country", "adm1", "adm2", "landscape_position" ,"year" , "crop",
