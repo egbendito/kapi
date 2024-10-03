@@ -58,7 +58,7 @@ system2("cp", args = c("-r", shQuote(src_folder), shQuote(dest_folder)))
 
 
 #bind metadata files to access uri and usecase_code
-md <- do.call(carobiner::bindr,lapply(paste0("data/clean/eia/",list.files("data/clean/eia/", pattern = "_meta")),read.csv))
+md <- do.call(carobiner::bindr,lapply(paste0("./data/clean/eia/",list.files("./data/clean/eia/", pattern = "_meta")),read.csv))
 write.csv(md, file = "./other/api/data/clean/carob_eia_meta.csv", row.names = FALSE)
 
 
