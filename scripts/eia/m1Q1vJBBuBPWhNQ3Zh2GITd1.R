@@ -223,6 +223,10 @@ carob_script <- function(path) {
   
   d3 <- d3[!with(d3, is.na(d3$harvest_date) & is.na(d3$crop_price) & is.na(d3$plot_area) & is.na(d3$yield_part) & is.na(d3$yield_marketable) & is.na(d3$fw_yield) & is.na(d3$yield_moisture)),]
   
-  carobiner::write_files(meta, d2, path=path)
+  d3$yield_marketable <- ifelse(d3$crop == "potato", as.numeric(d3$yield_marketable/(d3$plot_area/10000)), (d3$yield_marketable*(1-(d3$yield_moisture/100))/(d3$plot_area/10000)))
+  d3$fw_yield <- ifelse(d3$crop == "potato", as.numeric(d3$fw_yield/(d3$plot_area/10000)), (d3$fw_yield*(1-(d3$yield_moisture/100))/(d3$plot_area/10000)))
+  d3$yield <- d3$fw_yield
+  
+  carobiner::write_files(meta, d3, path=path)
   
 }
