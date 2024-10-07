@@ -20,7 +20,7 @@ For additional information on what is carob and how it is used, please visit [ht
 | R8EQa4bVPWLKYBuG7m9Bjsh0 | GH-CerLeg-GAIP | USC009 | addon | Ghana-GAIP-AddOn |
 | doi_10.7910_DVN_F3VTAL | GH-CerLeg-GAIP | USC009 | other | NA |
 | inzOQVrqT0rowUbaxaDsJFV2 | GH-CerLeg-Esoko | USC010 | experiment | Ghana-Soybean-NOT |
-| NA | WA-Rice-ATAFI/MOVE | USC001 | addon | Nigeria-ATAFI-AddOn |
+| ttkFAIbCvRiUzQIIZMM1z0Yj | WA-Rice-ATAFI/MOVE | USC001 | addon | Nigeria-ATAFI-AddOn |
 | NT7VLWDrOQEkarWkfn2bDSuf | WA-Rice-ATAFI/MOVE | USC001 | validation | Nigeria-ATAFI-AddOn |
 | NA | NG-Akilimo-SAA | USC008 | addon | Nigeria-SAA-AdOn |
 | NA | NG-Akilimo-SAA | USC008 | experiment | Nigeria-SAA-Experiment-PlantingDate |
